@@ -92,6 +92,7 @@ function App() {
     },
   ]);
 
+  // main router
   return <RouterProvider router={router} />;
 }
 

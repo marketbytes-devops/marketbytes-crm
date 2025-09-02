@@ -53,10 +53,10 @@ const Sidebar = ({ toggleSidebar }) => {
       ],
     },
     {
-      label: 'Projects',
+      label: 'Works',
       icon: <Folder className="w-5 h-5 mr-3" />,
       subItems: [
-        { to: '/projects/details', label: 'Project Details' },
+        { to: '/projects/details', label: 'Projects' },
         { to: '/projects/add', label: 'Add Project' },
       ],
     },

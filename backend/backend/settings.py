@@ -30,7 +30,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'documentation',
-    'authapp',
+    'authapp', 
+    "clients",        
+    "categories",
+    "departments",
+    'works',
+   'project_members'
+   
+
 ]
 
 MIDDLEWARE = [

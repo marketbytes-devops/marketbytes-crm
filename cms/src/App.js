@@ -18,6 +18,10 @@ import AddClient from "./pages/Client/AddClient";
 import ViewClient from "./pages/Client/ViewClient";
 import ProjectDetails from "./pages/Project/ProjectDetails";
 import AddProject from "./pages/Project/AddProject";
+import TicketDashboard from "./pages/DashboardHome/TicketDashboard"
+import FinanceDashboard from "./pages/DashboardHome/FinanceDashboard";
+import RenewalDashboard from "./pages/DashboardHome/RenewalDashboard";
+import Dashboardd from "./pages/DashboardHome/Dashboard";
 
 const ProtectedRoute = ({ children, isAuthenticated }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -53,6 +57,10 @@ function App() {
           element: <AdminDashboard />,
         },
         {
+          path: "/dashboard/dashboardd",
+          element: <Dashboardd />,
+        },
+        {
           path: "/dashboard/project",
           element: <ProjectDashboard />,
         },
@@ -73,7 +81,7 @@ function App() {
           element: <ViewClient />,
         },
         {
-          path: "/projects/details",
+          path: "/projects/:id",
           element: <ProjectDetails />,
         },
         {
@@ -88,6 +96,20 @@ function App() {
           path: "/settings",
           element: <Settings />,
         },
+        
+       {
+          path: "/dashboard/ticket",
+          element: <TicketDashboard />,
+        },
+        {
+          path: "/dashboard/finance",
+          element: <FinanceDashboard />,
+        },
+        {
+          path: "/dashboard/renewal",
+          element: <RenewalDashboard />,
+        },
+       
       ],
     },
   ]);

@@ -39,9 +39,13 @@ const Sidebar = ({ toggleSidebar }) => {
       label: 'Dashboard',
       icon: <LayoutDashboard className="w-5 h-5 mr-3" />,
       subItems: [
+        { to: '/dashboard/dashboardd', label: ' Dashboard' },
         { to: '/dashboard/project', label: 'Project Dashboard' },
         { to: '/dashboard/client', label: 'Client Dashboard' },
         { to: '/dashboard/hr', label: 'HR Dashboard' },
+        { to: '/dashboard/ticket', label: 'Ticket Dashboard' },
+        { to: '/dashboard/finance', label: 'Finance Dashboard' },
+        { to: '/dashboard/renewal', label: 'Renewal Dashboard' },
       ],
     },
     {

@@ -32,7 +32,7 @@ const Dropdown = ({ triggerText, icon: Icon, children, onApply, className = '' }
         <span className="text-sm font-semibold">{triggerText}</span>
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-auto bg-white rounded-lg shadow-lg p-4 z-10">
+        <div className="absolute left-0 mt-2 w-auto min-w-[200px] bg-white rounded-lg shadow-lg p-4 z-10">
           {children}
           {onApply && (
             <button

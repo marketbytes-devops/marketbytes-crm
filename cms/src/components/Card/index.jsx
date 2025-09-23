@@ -1,6 +1,6 @@
-const Card = ({ Icon, firstData, secondData }) => {
+const Card = ({ Icon, firstData, secondData,onClick }) => {
   return (
-    <div className="bg-white shadow-xs border border-gray-300 rounded-3xl p-6 hover:shadow-lg transition-shadow duration-300 grid items-center justify-start space-y-2">
+    <div onClick={onClick} className="bg-white shadow-xs border border-gray-300 rounded-3xl p-6 hover:shadow-lg transition-shadow duration-300 grid items-center justify-start space-y-2">
       <span className="flex items-center justify-center bg-gray-200 rounded-full w-14 h-14">
         {Icon && <Icon className="text-gray-600 w-8 h-8" />}
       </span>

@@ -1,31 +1,15 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { ChevronDown, ChevronUp, LayoutDashboard, User, Settings, Users, Folder } from 'lucide-react';
+import { ChevronDown, ChevronUp, LayoutDashboard, User, Settings, Users, Folder, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/images/img-logo.png';
 
 const Sidebar = ({ toggleSidebar }) => {
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const [isClientsOpen, setIsClientsOpen] = useState(false);
-  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
 
-  const toggleDashboard = () => {
-    setIsDashboardOpen(!isDashboardOpen);
-    setIsClientsOpen(false);
-    setIsProjectsOpen(false);
-  };
-
-  const toggleClients = () => {
-    setIsClientsOpen(!isClientsOpen);
-    setIsDashboardOpen(false);
-    setIsProjectsOpen(false);
-  };
-
-  const toggleProjects = () => {
-    setIsProjectsOpen(!isProjectsOpen);
-    setIsDashboardOpen(false);
-    setIsClientsOpen(false);
+  const toggleMenu = (label) => {
+    setOpenMenu(openMenu === label ? null : label);
   };
 
   const handleLinkClick = () => {
@@ -57,6 +41,24 @@ const Sidebar = ({ toggleSidebar }) => {
       ],
     },
     {
+      label: 'Lead',
+      icon: <Users className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/lead/add', label: 'Add Lead' },
+        { to: '/lead/view', label: 'View Lead' },
+        { to: '/lead/proposal', label: 'Add Proposal Template' },
+        { to: '/lead/rfp', label: 'Add RFP Template' },
+      ],
+    },
+    {
+      label: 'Support Request',
+      icon: <Clock className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/supportrequest/add', label: 'Add Support Request' },
+        { to: '/supportrequest/view', label: 'View Support Request' },
+      ],
+    },
+    {
       label: 'Works',
       icon: <Folder className="w-5 h-5 mr-3" />,
       subItems: [
@@ -64,6 +66,26 @@ const Sidebar = ({ toggleSidebar }) => {
         { to: '/projects/add', label: 'Add Project' },
       ],
     },
+    {
+      label: 'Tickets',
+      icon: <Users className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/tickets/add', label: 'Create Tickets' },
+        { to: '/tickets/view', label: 'Tickets View' },
+        { to: '/tickets/settings', label: 'Tickets settings' },
+      ],
+    },
+
+    {
+    label: 'HR',
+    icon: <Users className="w-5 h-5 mr-3" />,
+    subItems: [
+    
+          { to: '/hr/employee/view', label: 'Employee List' },
+          { to: '/hr/department/view', label: 'Department' },
+        ],
+      },
+
     { to: '/profile', label: 'Profile', icon: <User className="w-5 h-5 mr-3" /> },
     { to: '/settings', label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" /> },
   ];
@@ -96,17 +118,9 @@ const Sidebar = ({ toggleSidebar }) => {
               {item.subItems ? (
                 <>
                   <button
-                    onClick={
-                      item.label === 'Dashboard' ? toggleDashboard :
-                      item.label === 'Clients' ? toggleClients :
-                      toggleProjects
-                    }
+                    onClick={() => toggleMenu(item.label)}
                     className="flex items-center justify-between w-full p-3 rounded-lg text-black/80 hover:bg-gray-100 hover:text-black transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                    aria-expanded={
-                      item.label === 'Dashboard' ? isDashboardOpen :
-                      item.label === 'Clients' ? isClientsOpen :
-                      isProjectsOpen
-                    }
+                    aria-expanded={openMenu === item.label}
                     aria-controls={`submenu-${index}`}
                     aria-label={`Toggle ${item.label} menu`}
                   >
@@ -114,28 +128,22 @@ const Sidebar = ({ toggleSidebar }) => {
                       {item.icon}
                       {item.label}
                     </span>
-                    {(
-                      item.label === 'Dashboard' ? isDashboardOpen :
-                      item.label === 'Clients' ? isClientsOpen :
-                      isProjectsOpen
-                    ) ? (
+                    {openMenu === item.label ? (
                       <ChevronUp className="w-4 h-4 text-gray-500 hover:text-black" />
                     ) : (
                       <ChevronDown className="w-4 h-4 text-gray-500 hover:text-black" />
                     )}
                   </button>
                   <AnimatePresence>
-                    {(item.label === 'Dashboard' ? isDashboardOpen :
-                      item.label === 'Clients' ? isClientsOpen :
-                      isProjectsOpen) && item.subItems && (
-                      <div className="h-[140px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                    {openMenu === item.label && item.subItems && (
+                      <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                         <motion.ul
                           id={`submenu-${index}`}
                           className="pl-4 mt-2 space-y-2"
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
                         >
                           {item.subItems.map((subItem, subIndex) => (
                             <li key={subIndex}>

@@ -6,26 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/images/img-logo.png';
 
 const Sidebar = ({ toggleSidebar }) => {
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const [isClientsOpen, setIsClientsOpen] = useState(false);
-  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
 
-  const toggleDashboard = () => {
-    setIsDashboardOpen(!isDashboardOpen);
-    setIsClientsOpen(false);
-    setIsProjectsOpen(false);
-  };
-
-  const toggleClients = () => {
-    setIsClientsOpen(!isClientsOpen);
-    setIsDashboardOpen(false);
-    setIsProjectsOpen(false);
-  };
-
-  const toggleProjects = () => {
-    setIsProjectsOpen(!isProjectsOpen);
-    setIsDashboardOpen(false);
-    setIsClientsOpen(false);
+  const toggleMenu = (label) => {
+    setOpenMenu(openMenu === label ? null : label);
   };
 
   const handleLinkClick = () => {
@@ -46,6 +30,8 @@ const Sidebar = ({ toggleSidebar }) => {
         { to: '/dashboard/ticket', label: 'Ticket Dashboard' },
         { to: '/dashboard/finance', label: 'Finance Dashboard' },
         { to: '/dashboard/renewal', label: 'Renewal Dashboard' },
+    
+    
       ],
     },
     {
@@ -57,6 +43,37 @@ const Sidebar = ({ toggleSidebar }) => {
       ],
     },
     {
+      label: 'Lead',
+      icon: <Users className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/leads/add', label: 'Add leads' },
+        { to: '/leads/view', label: 'View leads' },
+        { to: '/leads/proposal', label: 'Add Proposal Template' },
+        { to: '/leads/rfp', label: 'Add RFP Template' },
+      ],
+    },
+     {
+      label: 'SupportRequest',
+      icon: <Users className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/support/add', label: 'add support' },
+        { to: '/support/view', label: 'View support' },
+      ],
+    },
+    {
+    label: 'HR',
+    icon: <Users className="w-5 h-5 mr-3" />,
+    subItems: [
+      {
+        label: 'Employee List',
+        subItems: [
+          { to: '/hr/employee/add', label: 'Add Employee' },
+          { to: '/hr/employee/view', label: 'View Employee' },
+        ],
+      },
+    ],
+  },
+    {
       label: 'Works',
       icon: <Folder className="w-5 h-5 mr-3" />,
       subItems: [
@@ -66,9 +83,27 @@ const Sidebar = ({ toggleSidebar }) => {
     },
     { to: '/profile', label: 'Profile', icon: <User className="w-5 h-5 mr-3" /> },
     { to: '/settings', label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" /> },
+
+     {
+      label: 'Renewal',
+      icon: <User className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/renewal/renewaal', label: 'Renewal' },
+      ],
+    },
+    
+    {
+      label: 'Ticket',
+      icon: <Users className="w-5 h-5 mr-3" />,
+        subItems: [
+        { to: '/ticket/ticketpage', label: 'Ticket' },
+      ],
+    },
+
+    
   ];
 
-  return (
+   return (
     <motion.div
       className="fixed top-0 left-0 w-72 h-screen bg-white shadow-lg flex flex-col border-r border-gray-200"
       style={{ background: 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 100%)' }}
@@ -96,17 +131,9 @@ const Sidebar = ({ toggleSidebar }) => {
               {item.subItems ? (
                 <>
                   <button
-                    onClick={
-                      item.label === 'Dashboard' ? toggleDashboard :
-                      item.label === 'Clients' ? toggleClients :
-                      toggleProjects
-                    }
+                    onClick={() => toggleMenu(item.label)}
                     className="flex items-center justify-between w-full p-3 rounded-lg text-black/80 hover:bg-gray-100 hover:text-black transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                    aria-expanded={
-                      item.label === 'Dashboard' ? isDashboardOpen :
-                      item.label === 'Clients' ? isClientsOpen :
-                      isProjectsOpen
-                    }
+                    aria-expanded={openMenu === item.label}
                     aria-controls={`submenu-${index}`}
                     aria-label={`Toggle ${item.label} menu`}
                   >
@@ -114,28 +141,22 @@ const Sidebar = ({ toggleSidebar }) => {
                       {item.icon}
                       {item.label}
                     </span>
-                    {(
-                      item.label === 'Dashboard' ? isDashboardOpen :
-                      item.label === 'Clients' ? isClientsOpen :
-                      isProjectsOpen
-                    ) ? (
+                    {openMenu === item.label ? (
                       <ChevronUp className="w-4 h-4 text-gray-500 hover:text-black" />
                     ) : (
                       <ChevronDown className="w-4 h-4 text-gray-500 hover:text-black" />
                     )}
                   </button>
                   <AnimatePresence>
-                    {(item.label === 'Dashboard' ? isDashboardOpen :
-                      item.label === 'Clients' ? isClientsOpen :
-                      isProjectsOpen) && item.subItems && (
-                      <div className="h-[140px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                    {openMenu === item.label && item.subItems && (
+                      <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                         <motion.ul
                           id={`submenu-${index}`}
                           className="pl-4 mt-2 space-y-2"
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
                         >
                           {item.subItems.map((subItem, subIndex) => (
                             <li key={subIndex}>

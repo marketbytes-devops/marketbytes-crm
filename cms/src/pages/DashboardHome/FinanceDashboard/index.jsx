@@ -1,11 +1,9 @@
-import React from 'react'
-
 const FinanceDashboard = () => {
   return (
-    <div>
-      finance
-    </div>
-  )
-}
+    <div className="p-4">
 
-export default FinanceDashboard
+    </div>
+  );
+};
+
+export default FinanceDashboard;

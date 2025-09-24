@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { ChevronDown, ChevronUp, LayoutDashboard, User, Settings, Users, Folder } from 'lucide-react';
+import { ChevronDown, ChevronUp, LayoutDashboard, User, Settings, Users, Folder, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/images/img-logo.png';
 
@@ -56,7 +56,7 @@ const Sidebar = ({ toggleSidebar }) => {
       label: 'SupportRequest',
       icon: <Users className="w-5 h-5 mr-3" />,
       subItems: [
-        { to: '/support/add', label: 'add support' },
+        { to: '/support/add', label: 'Add support' },
         { to: '/support/view', label: 'View support' },
       ],
     },
@@ -81,6 +81,26 @@ const Sidebar = ({ toggleSidebar }) => {
         { to: '/projects/add', label: 'Add Project' },
       ],
     },
+    {
+      label: 'Tickets',
+      icon: <Users className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/tickets/add', label: 'Create Tickets' },
+        { to: '/tickets/view', label: 'Tickets View' },
+        { to: '/tickets/settings', label: 'Tickets settings' },
+      ],
+    },
+
+    {
+    label: 'HR',
+    icon: <Users className="w-5 h-5 mr-3" />,
+    subItems: [
+    
+          { to: '/hr/employee/view', label: 'Employee List' },
+          { to: '/hr/department/view', label: 'Department' },
+        ],
+      },
+
     { to: '/profile', label: 'Profile', icon: <User className="w-5 h-5 mr-3" /> },
     { to: '/settings', label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" /> },
 

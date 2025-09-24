@@ -38,6 +38,7 @@ import TicketType from "./pages/Settings/TicketSettings/TicketType";
 import TicketChannel from "./pages/Settings/TicketSettings/TicketChannel";
 import ReplayTemplate from "./pages/Settings/TicketSettings/ReplayTemplate";
 import TicketSettings from "./pages/Settings/TicketSettings/TicketSidebar";
+
 const ProtectedRoute = ({ children, isAuthenticated }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
@@ -95,6 +96,7 @@ function App() {
           path: "/clients/view",
           element: <ViewClient />,
         },
+
         {
           path: "/projects/:id",
           element: <ProjectDetails />,

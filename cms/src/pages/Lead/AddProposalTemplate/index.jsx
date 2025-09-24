@@ -1,9 +1,11 @@
 import React from 'react'
 
-const index = () => {
+const AddProposalTemplate = () => {
   return (
-    <div>index</div>
+    <div>
+      AddProposalTemplate
+    </div>
   )
 }
 
-export default index
+export default AddProposalTemplate

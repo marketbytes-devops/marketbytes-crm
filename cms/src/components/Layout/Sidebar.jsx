@@ -30,6 +30,8 @@ const Sidebar = ({ toggleSidebar }) => {
         { to: '/dashboard/ticket', label: 'Ticket Dashboard' },
         { to: '/dashboard/finance', label: 'Finance Dashboard' },
         { to: '/dashboard/renewal', label: 'Renewal Dashboard' },
+    
+    
       ],
     },
     {
@@ -44,20 +46,33 @@ const Sidebar = ({ toggleSidebar }) => {
       label: 'Lead',
       icon: <Users className="w-5 h-5 mr-3" />,
       subItems: [
-        { to: '/lead/add', label: 'Add Lead' },
-        { to: '/lead/view', label: 'View Lead' },
-        { to: '/lead/proposal', label: 'Add Proposal Template' },
-        { to: '/lead/rfp', label: 'Add RFP Template' },
+        { to: '/leads/add', label: 'Add leads' },
+        { to: '/leads/view', label: 'View leads' },
+        { to: '/leads/proposal', label: 'Add Proposal Template' },
+        { to: '/leads/rfp', label: 'Add RFP Template' },
+      ],
+    },
+     {
+      label: 'SupportRequest',
+      icon: <Users className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/support/add', label: 'Add support' },
+        { to: '/support/view', label: 'View support' },
       ],
     },
     {
-      label: 'Support Request',
-      icon: <Clock className="w-5 h-5 mr-3" />,
-      subItems: [
-        { to: '/supportrequest/add', label: 'Add Support Request' },
-        { to: '/supportrequest/view', label: 'View Support Request' },
-      ],
-    },
+    label: 'HR',
+    icon: <Users className="w-5 h-5 mr-3" />,
+    subItems: [
+      {
+        label: 'Employee List',
+        subItems: [
+          { to: '/hr/employee/add', label: 'Add Employee' },
+          { to: '/hr/employee/view', label: 'View Employee' },
+        ],
+      },
+    ],
+  },
     {
       label: 'Works',
       icon: <Folder className="w-5 h-5 mr-3" />,
@@ -88,9 +103,27 @@ const Sidebar = ({ toggleSidebar }) => {
 
     { to: '/profile', label: 'Profile', icon: <User className="w-5 h-5 mr-3" /> },
     { to: '/settings', label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" /> },
+
+     {
+      label: 'Renewal',
+      icon: <User className="w-5 h-5 mr-3" />,
+      subItems: [
+        { to: '/renewal/renewaal', label: 'Renewal' },
+      ],
+    },
+    
+    {
+      label: 'Ticket',
+      icon: <Users className="w-5 h-5 mr-3" />,
+        subItems: [
+        { to: '/ticket/ticketpage', label: 'Ticket' },
+      ],
+    },
+
+    
   ];
 
-  return (
+   return (
     <motion.div
       className="fixed top-0 left-0 w-72 h-screen bg-white shadow-lg flex flex-col border-r border-gray-200"
       style={{ background: 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 100%)' }}

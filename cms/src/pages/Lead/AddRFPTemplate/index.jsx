@@ -1,9 +1,11 @@
 import React from 'react'
 
-const index = () => {
+function AddRFPTemplate() {
   return (
-    <div>index</div>
+    <div>
+      AddRFPTemplate
+    </div>
   )
 }
 
-export default index
+export default AddRFPTemplate

@@ -1,11 +1,11 @@
 import React from 'react'
 
-const AddLead = () => {
+const EmployeeList  = () => {
   return (
     <div>
-      Add lead
+      
     </div>
   )
 }
 
-export default AddLead
+export default EmployeeList 

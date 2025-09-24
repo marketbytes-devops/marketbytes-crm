@@ -1,9 +1,11 @@
 import React from 'react'
 
-const index = () => {
+function ViewLead() {
   return (
-    <div>view lead</div>
+    <div>
+      ViewLead
+    </div>
   )
 }
 
-export default index
+export default ViewLead

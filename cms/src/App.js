@@ -22,21 +22,22 @@ import TicketDashboard from "./pages/DashboardHome/TicketDashboard"
 import FinanceDashboard from "./pages/DashboardHome/FinanceDashboard";
 import RenewalDashboard from "./pages/DashboardHome/RenewalDashboard";
 import Dashboardd from "./pages/DashboardHome/Dashboard";
-import AddLead from "./pages/Lead/AddLead";
 import ViewLead from "./pages/Lead/ViewLead";
+import AddLead from "./pages/Lead/AddLead";
 import AddProposalTemplate from "./pages/Lead/AddProposalTemplate";
 import AddRFPTemplate from "./pages/Lead/AddRFPTemplate";
-import AddSupportRequest from "./pages/SupportRequest/AddSupportRequest"
-import ViewSupportRequest from "./pages/SupportRequest/ViewSupportRequest"
-import CreateTickets from "./pages/Tickets/CreateTickets"
-import TicketSettings from "./pages/Tickets/TicketSettings"
-import ViewTickets from "./pages/Tickets/ViewTickets"
-import ViewEmployee from "./pages/HR/EmployeeList/ViewEmployee"
-import View from "./pages/HR/Department/View"
-import ViewDept from "./pages/Client/Department/ViewDept"
-import AddDept from "./pages/Client/Department/AddDept"
-import ViewService from "./pages/Client/Department/ViewService"
-import AddService from "./pages/Client/Department/AddService"
+import AddSupportRequest from "./pages/SupportRequest/AddSupportRequest";
+import ViewSupportRequest from "./pages/SupportRequest/ViewSupportRequest";
+import EmployeeAdd from "./pages/HR/EmployeeList/EmployeeAdd";
+import EmployeeView from "./pages/HR/EmployeeList/EmployeeView";
+import Renewal from"./pages/Renewal/Renewal";
+import Ticket from"./pages/Ticket/Ticket";
+import CreateTicket from "./pages/Ticket/CreateTicket";
+import TicketAgent from "./pages/Settings/TicketSettings/TicketAgent";
+import TicketType from "./pages/Settings/TicketSettings/TicketType";
+import TicketChannel from "./pages/Settings/TicketSettings/TicketChannel";
+import ReplayTemplate from "./pages/Settings/TicketSettings/ReplayTemplate";
+import TicketSettings from "./pages/Settings/TicketSettings/TicketSidebar";
 
 const ProtectedRoute = ({ children, isAuthenticated }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -125,57 +126,70 @@ function App() {
           path: "/dashboard/renewal",
           element: <RenewalDashboard />,
         },
-         {
-          path: "/lead/add",
-          element: <AddLead /> ,
-        },
-         {
-          path: "/lead/view",
-          element: <ViewLead /> ,
-        },
-         {
-          path: "/lead/proposal",
-          element: <AddProposalTemplate /> ,
-        },
-         {
-          path: "/lead/rfp",
-          element: <AddRFPTemplate /> ,
-        },
+       {
+        path:"/leads/add",
+        element: <AddLead />
+       },
+       {
+       path:"/leads/view",
+       element: <ViewLead />
+       },
+       {
+        path:"/leads/proposal",
+        element: <AddProposalTemplate />
+       },
+       {
+        path:"/leads/rfp",
+        element: <AddRFPTemplate />
+       },
+       {
+        path:"/support/add",
+        element: <AddSupportRequest />
+       },
+       {
+        path:"/support/view",
+        element: <ViewSupportRequest />
+       },
+       {
+        path:"/hr/employee/add",
+        element: <EmployeeAdd />
+       },
+       {
+        path:"/hr/employee/view",
+        element: <EmployeeView />
+       },
+       {
+        path:"/renewal/renewaal",
+        element: <Renewal />
+       },
         {
-          path: "/supportrequest/add",
-          element: <AddSupportRequest /> ,
-        },
-         {
-          path: "/supportrequest/view",
-          element: <ViewSupportRequest /> ,
-        },
-        {
-          path:'/hr/employee/view',
-          element: <ViewEmployee/>,
-        },
-        {
-          path:'/hr/department/view',
-          element: <View/>,
-        },
-        {
-          path: '/clients/dept/view',
-          element: <ViewDept/>,
-
-        },
-         {
-          path: '/clients/dept/add',
-          element: <AddDept/>,
-        },
-        {
-          path:'/clients/service/view',
-          element: <ViewService/>
-        },
-        {
-          path:'/clients/service/add',
-          element: <AddService/>
-
-        }
-       
+        path:"/ticket/ticketpage",
+        element: <Ticket />
+       },
+       {
+        path:"/ticket/create",
+        element: <CreateTicket />
+       },
+       {
+        path:"/ticketsettings/ticketagent",
+        element: <TicketAgent />
+       },
+       {
+        path:"/ticketsettings/tickettype",
+        element: <TicketType />
+       },
+       {
+        path:"/ticketsettings/ticketchannel",
+        element: <TicketChannel />
+       },
+      {
+      path:"/ticketsettings/replaytemplate",
+      element: <ReplayTemplate />
+      },
+      {
+        path:"/ticketsettings/ticketsidebar",
+        element: <TicketSettings />
+      }
       ],
     },
   ]);

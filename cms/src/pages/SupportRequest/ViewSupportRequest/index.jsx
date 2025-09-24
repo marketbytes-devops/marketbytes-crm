@@ -1,9 +1,11 @@
 import React from 'react'
 
-const index = () => {
+const ViewSupportRequest = () => {
   return (
-    <div>view request</div>
+    <div>
+      ViewSupportRequest
+    </div>
   )
 }
 
-export default index
+export default ViewSupportRequest

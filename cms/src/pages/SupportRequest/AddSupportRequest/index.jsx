@@ -1,9 +1,11 @@
 import React from 'react'
 
-const index = () => {
+const AddSupportRequest = () => {
   return (
-    <div> add request</div>
+    <div>
+      AddSupportRequest
+    </div>
   )
 }
 
-export default index
+export default AddSupportRequest

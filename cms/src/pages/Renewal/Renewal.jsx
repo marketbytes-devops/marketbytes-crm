@@ -1,11 +1,11 @@
 import React from 'react'
 
-const AddLead = () => {
+const Renewal = () => {
   return (
     <div>
-      Add lead
+      renewal
     </div>
   )
 }
 
-export default AddLead
+export default Renewal

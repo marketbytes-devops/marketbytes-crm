@@ -1,11 +1,38 @@
-import React from 'react'
-
+import { Users, Bookmark } from "lucide-react";
+import Card from '../../../components/Card';
+import Title from '../../../components/Title';
 const RenewalDashboard = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const cardData = [
+    { id: 1, Icon: Users, firstData: 2, secondData: "Total Clients" },
+    { id: 2, Icon: Bookmark, firstData: 0, secondData: "Active Domains" },
+    { id: 3, Icon: Bookmark, firstData: 0, secondData: "Pending Domains" },
+    { id: 4, Icon: Bookmark, firstData: 0, secondData: "Expired Domains" },
+    { id: 5, Icon: Bookmark, firstData: 0, secondData: "Active Hosting" },
+    { id: 6, Icon: Bookmark, firstData: 0, secondData: "Pending Hosting" },
+    { id: 7, Icon: Bookmark, firstData: 0, secondData: "Expired Hosting" },
+    { id: 8, Icon: Bookmark, firstData: 0, secondData: "Active SSL" },
+    { id: 9, Icon: Bookmark, firstData: 0, secondData: "Pending SSL" },
+    { id: 10, Icon: Bookmark, firstData: 0, secondData: "Expired SSL" },
+    { id: 11, Icon: Bookmark, firstData: 0, secondData: "Active Emails" },
+    { id: 12, Icon: Bookmark, firstData: 0, secondData: "Pending Emails" },
+    { id: 13, Icon: Bookmark, firstData: 0, secondData: "Expired Emails" },
+  ];
 
-export default RenewalDashboard
+  return (
+    <div className="p-6">
+      <Title title="Renewal Dashboard" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {cardData.map(({ id, Icon, firstData, secondData }) => (
+          <Card
+            key={id}
+            Icon={Icon}
+            firstData={firstData}
+            secondData={secondData}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default RenewalDashboard;

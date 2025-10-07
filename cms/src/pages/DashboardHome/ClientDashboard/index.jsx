@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Users, CheckCircle, FileText, Settings, CalendarCheck } from 'lucide-react';
@@ -7,8 +8,10 @@ import InputField from '../../../components/InputField';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import Dropdown from '../../../components/Dropdown';
-
-// import axios from 'axios'; // Uncomment when backend is ready
+import axios from 'axios';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,16 +22,15 @@ const ClientDashboard = () => {
     endDate: '',
   });
   const [dashboardData, setDashboardData] = useState({
-    totalClients: 2,
-    totalLeads: 2,
+    totalClients: 0,
+    totalLeads: 2, // Static data for other widgets
     totalLeadConversions: 0,
     contractsGenerated: 0,
     totalContractsSigned: 0,
-    latestClients: [
-      { id: 1, name: 'Nithya', timeAgo: '2 days ago' },
-      { id: 2, name: 'Client 1', timeAgo: '3 hours ago' }
-    ]
+    latestClients: [], // Will be populated from backend
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Widget settings state
   const [widgetSettings, setWidgetSettings] = useState({
@@ -42,38 +44,58 @@ const ClientDashboard = () => {
     leadsCountByStatus: true,
     leadsCountBySource: true,
     latestClients: true,
-    recentLoginActivities: true
+    recentLoginActivities: true,
   });
 
-  // Uncomment and implement when backend is ready
-  /*
+  // Fetch client data from backend
   useEffect(() => {
     fetchDashboardData();
   }, [dateRange]);
 
   const fetchDashboardData = async () => {
+    setLoading(true);
+    setError('');
     try {
-      const response = await axios.get('/api/client-dashboard/', {
+      const response = await axios.get('http://localhost:8000/api/clients/', {
         params: {
-          start_date: dateRange.startDate,
-          end_date: dateRange.endDate
-        }
+          start_date: dateRange.startDate || undefined,
+          end_date: dateRange.endDate || undefined,
+        },
       });
-      setDashboardData(response.data);
+      const clients = response.data;
+      console.log('Clients:', clients);
+
+      // Sort clients by created_at (descending) and take the latest 3
+      const sortedClients = clients
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 3)
+        .map((client) => ({
+          id: client.id,
+          name: client.name,
+          timeAgo: formatDistanceToNow(parseISO(client.created_at), { addSuffix: true }),
+        }));
+
+      setDashboardData((prev) => ({
+        ...prev,
+        totalClients: clients.length,
+        latestClients: sortedClients,
+      }));
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      // Handle error (show message to user, etc.)
+      setError('Failed to load client data. Please try again.');
+      toast.error('Failed to load client data. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
-  */
 
   const handleDateRangeChange = (field, value) => {
     setDateRange((prev) => ({ ...prev, [field]: value }));
   };
 
   const applyDateRange = () => {
-    // fetchDashboardData(); // Uncomment when backend is ready
-    console.log('Applying date range:', dateRange);
+    fetchDashboardData();
+    toast.info('Date range applied');
   };
 
   const handleCardClick = (path) => {
@@ -88,7 +110,7 @@ const ClientDashboard = () => {
     setWidgetSettings(updatedSettings);
   };
 
-  // Chart data
+  // Chart data (unchanged for leads, as per requirement)
   const leadsStatusData = {
     labels: ['New Lead'],
     datasets: [
@@ -123,10 +145,11 @@ const ClientDashboard = () => {
 
   return (
     <div className="p-4">
+      <ToastContainer />
       {/* Header Section */}
       <div className="w-full h-auto flex justify-between items-center mb-4">
         <Title title="Client Dashboard" />
-        <div className="flex space-x-4">
+        <div className="flex space-x-5">
           {/* Widget Settings Dropdown */}
           <Dropdown triggerText="Widget Settings" icon={Settings}>
             <div className="space-y-2 w-[250px]">
@@ -231,12 +254,13 @@ const ClientDashboard = () => {
               </label>
             </div>
           </Dropdown>
-          
+
           {/* Date Range Dropdown */}
           <Dropdown
             triggerText="Date Range"
             icon={CalendarCheck}
             onApply={applyDateRange}
+            className="space-x-40"
           >
             <div className="flex items-center space-x-2 mb-2 p-2">
               <InputField
@@ -259,9 +283,24 @@ const ClientDashboard = () => {
         </div>
       </div>
 
+      {/* Loading and Error States */}
+      {loading && (
+        <div className="text-center p-4">
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      )}
+      {error && (
+        <div className="mb-4 p-3 rounded-md text-sm bg-red-100 text-red-700">
+          {error}
+        </div>
+      )}
+
       {/* Metrics Grid - Conditionally render based on widget settings */}
-      {widgetSettings.totalClients || widgetSettings.totalLeads || widgetSettings.totalLeadConversions || 
-       widgetSettings.contractsGenerated || widgetSettings.totalContractsSigned ? (
+      {widgetSettings.totalClients ||
+      widgetSettings.totalLeads ||
+      widgetSettings.totalLeadConversions ||
+      widgetSettings.contractsGenerated ||
+      widgetSettings.totalContractsSigned ? (
         <div className="rounded-3xl bg-gray-50 border border-gray-200 mb-4 w-full h-auto p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {widgetSettings.totalClients && (
             <div onClick={() => handleCardClick('/clients/view')} className="cursor-pointer">
@@ -269,22 +308,22 @@ const ClientDashboard = () => {
             </div>
           )}
           {widgetSettings.totalLeads && (
-            <div onClick={() => handleCardClick('/lead/view')} className="cursor-pointer">
+            <div onClick={() => handleCardClick('/leads/view')} className="cursor-pointer">
               <Card Icon={Users} firstData={dashboardData.totalLeads} secondData="Total Leads" />
             </div>
           )}
           {widgetSettings.totalLeadConversions && (
-            <div onClick={() => handleCardClick('/lead/view')} className="cursor-pointer">
+            <div onClick={() => handleCardClick('/leads/view')} className="cursor-pointer">
               <Card Icon={CheckCircle} firstData={dashboardData.totalLeadConversions} secondData="Total Lead Conversions" />
             </div>
           )}
           {widgetSettings.contractsGenerated && (
-            <div onClick={() => handleCardClick('')} className="cursor-pointer">
+            <div onClick={() => handleCardClick('/works/contracts')} className="cursor-pointer">
               <Card Icon={FileText} firstData={dashboardData.contractsGenerated} secondData="Contracts Generated" />
             </div>
           )}
           {widgetSettings.totalContractsSigned && (
-            <div onClick={() => handleCardClick('')} className="cursor-pointer">
+            <div onClick={() => handleCardClick('/works/contracts')} className="cursor-pointer">
               <Card Icon={CheckCircle} firstData={dashboardData.totalContractsSigned} secondData="Total Contracts Signed" />
             </div>
           )}
@@ -340,16 +379,22 @@ const ClientDashboard = () => {
           {widgetSettings.latestClients && (
             <div className="bg-white shadow-md rounded-3xl p-6">
               <Title title="LATEST CLIENTS" />
-              <div className="space-y-4">
-                {dashboardData.latestClients.map(client => (
-                  <div key={client.id} className="flex items-center space-x-2">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <User className="text-green-600" />
+              {dashboardData.latestClients.length === 0 ? (
+                <p className="text-gray-500">No clients found.</p>
+              ) : (
+                <div className="space-y-4">
+                  {dashboardData.latestClients.map((client) => (
+                    <div key={client.id} className="flex items-center space-x-2">
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <User className="text-green-600" />
+                      </div>
+                      <span>
+                        {client.name} ({client.timeAgo})
+                      </span>
                     </div>
-                    <span>{client.name} {client.timeAgo}</span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {widgetSettings.recentLoginActivities && (

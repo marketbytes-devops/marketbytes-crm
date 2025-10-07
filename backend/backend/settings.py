@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     "categories",
     "departments",
     'works',
-   'project_members'
+   'project_members',
+   "services"
    
 
 ]

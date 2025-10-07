@@ -9,6 +9,10 @@ const Settings = () => {
     navigate('/ticketsettings/ticketagent');
   };
 
+    const handleNavigateToLeadSource = () => {
+    navigate('/leadsettings/leadsource');
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -23,6 +27,12 @@ const Settings = () => {
             onClick={handleNavigateToTicketAgent}
           >
             Ticket Settings
+          </li>
+          <li
+            className="bg-purple-500 text-white p-2 rounded cursor-pointer"
+            onClick={handleNavigateToLeadSource}
+          >
+            Lead Settings
           </li>
           <li className="text-gray-600 p-2 rounded hover:bg-gray-100">Finance Settings</li>
           <li className="text-gray-600 p-2 rounded hover:bg-gray-100">Project Settings</li>

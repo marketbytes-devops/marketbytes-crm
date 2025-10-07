@@ -28,8 +28,6 @@ import AddProposalTemplate from "./pages/Lead/AddProposalTemplate";
 import AddRFPTemplate from "./pages/Lead/AddRFPTemplate";
 import AddSupportRequest from "./pages/SupportRequest/AddSupportRequest";
 import ViewSupportRequest from "./pages/SupportRequest/ViewSupportRequest";
-import EmployeeAdd from "./pages/HR/EmployeeList/EmployeeAdd";
-import EmployeeView from "./pages/HR/EmployeeList/EmployeeView";
 import Renewal from"./pages/Renewal/Renewal";
 import Ticket from"./pages/Ticket/Ticket";
 import CreateTicket from "./pages/Ticket/CreateTicket";
@@ -38,6 +36,26 @@ import TicketType from "./pages/Settings/TicketSettings/TicketType";
 import TicketChannel from "./pages/Settings/TicketSettings/TicketChannel";
 import ReplayTemplate from "./pages/Settings/TicketSettings/ReplayTemplate";
 import TicketSettings from "./pages/Settings/TicketSettings/TicketSidebar";
+
+import ViewEmployee from "./pages/HR/EmployeeList/ViewEmployee";
+import View from "./pages/HR/Department/View";
+import ViewDept from"./pages/Client/Department/ViewDept";
+import AddDept from"./pages/Client/Department/AddDept";
+import ViewService from "./pages/Client/Department/ViewService";
+import AddService from "./pages/Client/Department/AddService";
+
+import KanbanBoard from "./pages/Lead/KanbanBoard";
+import LeadForm from "./pages/Lead/LeadForm";
+
+import LeadSettings from "./pages/Settings/LeadSettings/LeadSidebar";
+import LeadSource from "./pages/Settings/LeadSettings/LeadSource";
+import LeadStatus from "./pages/Settings/LeadSettings/LeadStatus";
+import LeadAgent from "./pages/Settings/LeadSettings/LeadAgent";
+import LeadCategory from "./pages/Settings/LeadSettings/LeadCategory";
+
+
+import ContractsView from "./pages/Contracts/ContractsView"
+
 
 const ProtectedRoute = ({ children, isAuthenticated }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -151,14 +169,6 @@ function App() {
         element: <ViewSupportRequest />
        },
        {
-        path:"/hr/employee/add",
-        element: <EmployeeAdd />
-       },
-       {
-        path:"/hr/employee/view",
-        element: <EmployeeView />
-       },
-       {
         path:"/renewal/renewaal",
         element: <Renewal />
        },
@@ -189,7 +199,79 @@ function App() {
       {
         path:"/ticketsettings/ticketsidebar",
         element: <TicketSettings />
-      }
+      },
+      {
+          path:'/hr/employee/view',
+          element: <ViewEmployee/>,
+        },
+        {
+          path:'/hr/department/view',
+          element: <View/>,
+        },
+        {
+          path: '/clients/dept/view',
+          element: <ViewDept/>,
+
+        },
+         {
+          path: '/clients/dept/add',
+          element: <AddDept/>,
+        },
+        {
+          path:'/clients/service/view',
+          element: <ViewService/>
+        },
+        {
+          path:'/clients/service/add',
+          element: <AddService/>
+        },
+        {
+          path:'/leads/kanbanboard',
+          element: <KanbanBoard/>
+        },
+         {
+          path:'/leads/leadform',
+          element: <LeadForm/>
+        },
+        {
+          path:'/leadsettings/leadsidebar',
+          element: <LeadSettings/>
+        },
+         {
+        path:"/leadsettings/leadsource",
+        element: <LeadSource />
+       },
+       {
+        path:"/leadsettings/leadstatus",
+        element: <LeadStatus/>
+       },
+       {
+        path:"/leadsettings/leadagent",
+        element: <LeadAgent/>
+       },
+       {
+        path:"/leadsettings/leadcategory",
+        element: <LeadCategory/>
+       },
+
+       {
+        path: "/works/contracts",
+        element: <ContractsView/>
+       },
+
+       {
+        path: "/clients/edit/:id",
+        element: <AddClient/>
+       },
+       {
+        path: "/clients/dept/edit/:id",
+        element: <AddDept/>
+       },
+       {
+        path: "/clients/service/edit/:id",
+        element: <AddService/>
+       }
+
       ],
     },
   ]);

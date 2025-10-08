@@ -200,6 +200,3 @@ const EmployeeProfile = () => {
 };
 
 export default EmployeeProfile;
-
-
-// git issue

@@ -1,27 +1,39 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../../../components/InputField';
 import Button from '../../../components/Button';
 import { CogIcon } from '@heroicons/react/24/outline';
 import TicketSidebar from '../TicketSettings/TicketSidebar';
+import axios from 'axios';
 
 const TicketAgent = () => {
   const [agents, setAgents] = useState([]);
   const [selectedAgents, setSelectedAgents] = useState('');
-  const [assignedGroup, setAssignedGroup] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const apiBaseUrl = 'http://localhost:8000/api/tickets/';
+
+  // Fetch agents on component mount
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const response = await axios.get(`${apiBaseUrl}agents/`);
+        setAgents(response.data);
+        setError('');
+      } catch (err) {
+        setError('Failed to fetch agents: ' + (err.response?.data?.message || err.message));
+        console.error('Error fetching agents:', err);
+      }
+    };
+    fetchAgents();
+  }, []);
 
   const handleSave = () => {
     // Handle save logic here
+    // Example: Send selectedAgents to backend to create AgentAssignment
+    console.log('Selected Agent ID:', selectedAgents);
   };
-
-  // Sample group options
-  const groupOptions = [
-    { value: '', label: '--' },
-    { value: 'group1', label: 'Group 1' },
-    { value: 'group2', label: 'Group 2' },
-    { value: 'group3', label: 'Group 3' },
-  ];
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -33,43 +45,23 @@ const TicketAgent = () => {
             Ticket Agents
           </h2>
 
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+
           <div className="space-y-4">
             {/* Add Agents */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Add New Agents *
               </label>
-              <InputField
-                type="text"
-                placeholder="Choose Agents *"
+              <select
+                className="w-full p-2 border border-gray-300 rounded text-sm"
                 value={selectedAgents}
                 onChange={(e) => setSelectedAgents(e.target.value)}
-              />
-            </div>
-
-            {/* Assign Group with Manage Groups Button + Native Select */}
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Assign Group
-                </label>
-                <Button
-                  onClick={() => navigate('/manage-groups')}
-                  className="px-2 py-1 text-xs border border-blue-500 text-blue-500  bg-white hover:bg-blue-50"
-                >
-                  Manage Groups
-                </Button>
-                <span className="text-red-500">*</span>
-              </div>
-
-              <select
-                value={assignedGroup}
-                onChange={(e) => setAssignedGroup(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
               >
-                {groupOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                <option value="">Choose Agents</option>
+                {agents.map((agent) => (
+                  <option key={agent.id} value={agent.id}>
+                    {agent.name} ({agent.email})
                   </option>
                 ))}
               </select>
@@ -92,7 +84,6 @@ const TicketAgent = () => {
           <h3 className="text-lg font-semibold mb-4">Agents</h3>
           <div className="grid grid-cols-4 gap-4 text-gray-500 font-medium">
             <span>NAME</span>
-            <span>GROUP</span>
             <span>STATUS</span>
             <span>ACTION</span>
           </div>

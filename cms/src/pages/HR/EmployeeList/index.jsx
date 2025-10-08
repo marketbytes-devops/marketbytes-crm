@@ -1,6 +1,6 @@
 import React from 'react'
 
-const EmployeeList  = () => {
+const index = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const EmployeeList  = () => {
   )
 }
 
-export default EmployeeList 
+export default index

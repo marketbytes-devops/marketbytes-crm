@@ -28,16 +28,36 @@ import AddProposalTemplate from "./pages/Lead/AddProposalTemplate";
 import AddRFPTemplate from "./pages/Lead/AddRFPTemplate";
 import AddSupportRequest from "./pages/SupportRequest/AddSupportRequest";
 import ViewSupportRequest from "./pages/SupportRequest/ViewSupportRequest";
-import EmployeeAdd from "./pages/HR/EmployeeList/EmployeeAdd";
-import EmployeeView from "./pages/HR/EmployeeList/EmployeeView";
-import Renewal from"./pages/Renewal/Renewal";
-import Ticket from"./pages/Ticket/Ticket";
+import Renewal from"./pages/Renewal/CreateRenewal";
 import CreateTicket from "./pages/Ticket/CreateTicket";
 import TicketAgent from "./pages/Settings/TicketSettings/TicketAgent";
 import TicketType from "./pages/Settings/TicketSettings/TicketType";
 import TicketChannel from "./pages/Settings/TicketSettings/TicketChannel";
+import TicketUI from "./pages/Ticket/TicketUI";
 import ReplayTemplate from "./pages/Settings/TicketSettings/ReplayTemplate";
 import TicketSettings from "./pages/Settings/TicketSettings/TicketSidebar";
+import Ticket from "./pages/Ticket/Ticket";
+import ViewEmployee from "./pages/HR/EmployeeList/ViewEmployee";
+import View from "./pages/HR/Department/View";
+import AddEmployee from "./pages/HR/EmployeeList/AddEmployee";
+import DesignationView from "./pages/HR/Designation/view";
+import ViewDept from"./pages/Client/Department/ViewDept";
+import AddDept from"./pages/Client/Department/AddDept";
+import ViewService from "./pages/Client/Department/ViewService";
+import AddService from "./pages/Client/Department/AddService";
+import RenewalReport from"./pages/Reports/RenewalReport";
+import RenewalReportssl from"./pages/Reports/RenewalReportssl";
+import RenewalReporthosting from"./pages/Reports/RenewalReporthosting";
+import RenewalReportemail from "./pages/Reports/RenewalReportemail";
+import RenewalReportHeader from "./pages/Reports/RenewalReportHeader";
+import CreateRenewalHeader from "./pages/Renewal/CreateRenewalHeader";
+import CreateRenewalDomain from "./pages/Renewal/CreateRenewalDomain";
+import CreateRenewalEmail from"./pages/Renewal/CreateRenewalEmail";
+import CreateRenewalHosting from "./pages/Renewal/CreateRenewalHosting";
+import CreateRenewalssl from "./pages/Renewal/CreateRenewalssl";
+import CreateRenewal from "./pages/Renewal/CreateRenewal";
+import EmployeeList from "./pages/HR/EmployeeList/EmployeeList";
+import EmployeeProfile from "./pages/HR/EmployeeList/EmployeeProfile";
 const ProtectedRoute = ({ children, isAuthenticated }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
@@ -95,6 +115,7 @@ function App() {
           path: "/clients/view",
           element: <ViewClient />,
         },
+
         {
           path: "/projects/:id",
           element: <ProjectDetails />,
@@ -148,22 +169,15 @@ function App() {
         path:"/support/view",
         element: <ViewSupportRequest />
        },
-       {
-        path:"/hr/employee/add",
-        element: <EmployeeAdd />
-       },
-       {
-        path:"/hr/employee/view",
-        element: <EmployeeView />
-       },
+       
        {
         path:"/renewal/renewaal",
         element: <Renewal />
        },
         {
-        path:"/ticket/ticketpage",
-        element: <Ticket />
-       },
+          path:"/ticket/ticketpage",
+          element: <Ticket />
+        },
        {
         path:"/ticket/create",
         element: <CreateTicket />
@@ -180,6 +194,11 @@ function App() {
         path:"/ticketsettings/ticketchannel",
         element: <TicketChannel />
        },
+       {
+        path:"/ticket/:id",
+        element:<TicketUI />
+      },
+
       {
       path:"/ticketsettings/replaytemplate",
       element: <ReplayTemplate />
@@ -187,9 +206,102 @@ function App() {
       {
         path:"/ticketsettings/ticketsidebar",
         element: <TicketSettings />
-      }
+      },
+      {
+          path:'/hr/employee/view',
+          element: <ViewEmployee/>,
+        },
+        {
+        path:'hr/employee/add',
+        element:<AddEmployee/>
+      },
+        {
+          path:'/hr/department/view',
+          element: <View/>,
+        },
+        {
+        path:'hr/designation',
+        element:<DesignationView />
+      },
+      {
+        path:'/hr/employeeprofile/:employeeId',
+        element:<EmployeeProfile />
+      },
+        {
+          path: '/clients/dept/view',
+          element: <ViewDept/>,
+ 
+        },
+         {
+          path: '/clients/dept/add',
+          element: <AddDept/>,
+        },
+        {
+          path:'/clients/service/view',
+          element: <ViewService/>
+        },
+        {
+          path:'/clients/service/add',
+          element: <AddService/>
+        },
+        {
+          path:'/reports/renewal-report',
+          element: <RenewalReport/>
+        },
+      {
+        path:'/reports/renewal-report-ssl',
+        element:<RenewalReportssl />
+      },
+      {
+        path:'/reports/renewal-report-hosting',
+        element:<RenewalReporthosting />
+      },
+      {
+        path:'/reports/renewal-report-email',
+        element:<RenewalReportemail />
+      },
+      {
+        path:'/reports/renewal-topbar',
+        element:<RenewalReportHeader />
+      },
+      {
+        path:'/reports/renewal-report',
+        element:<Renewal />
+
+      },
+      {
+        path:'/renewal/create/renewal-header',
+        element:<CreateRenewalHeader />
+      },
+      {
+        path:'/renewal/create/renewal-domain',
+        element:<CreateRenewalDomain />
+      },
+      {
+        path:'/renewal/create/renewal-hosting',
+        element:<CreateRenewalHosting />
+      },
+     {
+        path:'/renewal/create/renewal-ssl',
+        element:<CreateRenewalssl />
+      },
+      {
+        path:'/renewal/create/renewal-email',
+        element:<CreateRenewalEmail />
+      },
+      {
+        path:'/renewal/create/renewal',
+        element:<CreateRenewal />
+      },
+      {
+        path:'/hr/employeelist/employeelist',
+        element:<EmployeeList />
+      },
+      
+      
       ],
     },
+
   ]);
 
   // main router

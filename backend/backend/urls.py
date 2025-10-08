@@ -19,8 +19,9 @@ urlpatterns = [
     path("api/categories/", include("categories.urls")),
     path("api/departments/", include("departments.urls")),
     path("api/project-members/", include("project_members.urls")),
-
-
+    
+     path('api/tickets/', include('ticket_app.urls')),
+       path('api/designation/', include('designation.urls')),
 
 ]
 

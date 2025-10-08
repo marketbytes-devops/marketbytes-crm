@@ -269,12 +269,12 @@ const ClientDashboard = () => {
             </div>
           )}
           {widgetSettings.totalLeads && (
-            <div onClick={() => handleCardClick('/lead/view')} className="cursor-pointer">
+            <div onClick={() => handleCardClick('/leads/view')} className="cursor-pointer">
               <Card Icon={Users} firstData={dashboardData.totalLeads} secondData="Total Leads" />
             </div>
           )}
           {widgetSettings.totalLeadConversions && (
-            <div onClick={() => handleCardClick('/lead/view')} className="cursor-pointer">
+            <div onClick={() => handleCardClick('/leads/view')} className="cursor-pointer">
               <Card Icon={CheckCircle} firstData={dashboardData.totalLeadConversions} secondData="Total Lead Conversions" />
             </div>
           )}

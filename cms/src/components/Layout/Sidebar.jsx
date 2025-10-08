@@ -60,34 +60,13 @@ const Sidebar = ({ toggleSidebar }) => {
         { to: '/support/view', label: 'View support' },
       ],
     },
-    {
-    label: 'HR',
-    icon: <Users className="w-5 h-5 mr-3" />,
-    subItems: [
-      {
-        label: 'Employee List',
-        subItems: [
-          { to: '/hr/employee/add', label: 'Add Employee' },
-          { to: '/hr/employee/view', label: 'View Employee' },
-        ],
-      },
-    ],
-  },
+   
     {
       label: 'Works',
       icon: <Folder className="w-5 h-5 mr-3" />,
       subItems: [
         { to: '/projects/details', label: 'Projects' },
         { to: '/projects/add', label: 'Add Project' },
-      ],
-    },
-    {
-      label: 'Tickets',
-      icon: <Users className="w-5 h-5 mr-3" />,
-      subItems: [
-        { to: '/tickets/add', label: 'Create Tickets' },
-        { to: '/tickets/view', label: 'Tickets View' },
-        { to: '/tickets/settings', label: 'Tickets settings' },
       ],
     },
 
@@ -98,17 +77,17 @@ const Sidebar = ({ toggleSidebar }) => {
     
           { to: '/hr/employee/view', label: 'Employee List' },
           { to: '/hr/department/view', label: 'Department' },
+          { to: '/hr/designation/', label: 'Designation' },
         ],
       },
 
-    { to: '/profile', label: 'Profile', icon: <User className="w-5 h-5 mr-3" /> },
-    { to: '/settings', label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" /> },
+   
 
      {
       label: 'Renewal',
       icon: <User className="w-5 h-5 mr-3" />,
       subItems: [
-        { to: '/renewal/renewaal', label: 'Renewal' },
+        { to: '/renewal/create/renewal', label: 'Renewal' },
       ],
     },
     
@@ -117,9 +96,22 @@ const Sidebar = ({ toggleSidebar }) => {
       icon: <Users className="w-5 h-5 mr-3" />,
         subItems: [
         { to: '/ticket/ticketpage', label: 'Ticket' },
+
       ],
     },
+    {
+      label: 'Reports',
+      icon: <Folder className="w-5 h-5 mr-3" />,
+        subItems: [
+        { to: '/reports/renewal-report', label: 'RenewalReport' },
 
+      ],
+    },
+     
+
+    { to: '/profile', label: 'Profile', icon: <User className="w-5 h-5 mr-3" /> },
+    { to: '/settings', label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" /> },
+    
     
   ];
 

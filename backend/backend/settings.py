@@ -38,7 +38,7 @@ INSTALLED_APPS = [
    'project_members',
    'ticket_app',
    'designation',
-   
+   'services'
 
 ]
 

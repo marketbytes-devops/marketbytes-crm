@@ -26,6 +26,8 @@ import ViewLead from "./pages/Lead/ViewLead";
 import AddLead from "./pages/Lead/AddLead";
 import AddProposalTemplate from "./pages/Lead/AddProposalTemplate";
 import AddRFPTemplate from "./pages/Lead/AddRFPTemplate";
+import KanbanBoard from "./pages/Lead/KanbanBoard";
+import LeadForm from "./pages/Lead/LeadForm";
 import AddSupportRequest from "./pages/SupportRequest/AddSupportRequest";
 import ViewSupportRequest from "./pages/SupportRequest/ViewSupportRequest";
 import Renewal from"./pages/Renewal/CreateRenewal";
@@ -39,8 +41,24 @@ import TicketSettings from "./pages/Settings/TicketSettings/TicketSidebar";
 import Ticket from "./pages/Ticket/Ticket";
 import ViewEmployee from "./pages/HR/EmployeeList/ViewEmployee";
 import View from "./pages/HR/Department/View";
+import Add from"./pages/HR/Department/Add";
 import AddEmployee from "./pages/HR/EmployeeList/AddEmployee";
 import DesignationView from "./pages/HR/Designation/view";
+import EditEmployee from "./pages/HR/EmployeeList/EditEmployee";
+import AttendanceSummary from "./pages/HR/Attendance/AttendanceSummary";
+import AttendanceMember from "./pages/HR/Attendance/AttendanceMember";
+import AttendanceMark from "./pages/HR/Attendance/AttendanceMark";
+import Holiday from "./pages/HR/Holiday";
+import HolidayCalendar from "./pages/HR/Holiday/HolidayCalendar";
+import Leaves from "./pages/HR/Leaves/PendingLeaves";
+import AllLeaves from"./pages/HR/Leaves/AllLeaves";
+import AssignLeaves from"./pages/HR/Leaves/AssignLeaves";
+import OvertimeWork from "./pages/HR/OvertimeWork";
+import RecruitmentView from"./pages/HR/Recruitment/RecruitmentView";
+import CreateRecruitment from"./pages/HR/Recruitment/CreateRecruitment";
+import EditRecruitment from"./pages/HR/Recruitment/EditRecruitment";
+import OvertimeCreate from "./pages/HR/OvertimeWork/OvertimeCreate";
+import Calendar from"./pages/HR/Leaves/Calendar";
 import ViewDept from"./pages/Client/Department/ViewDept";
 import AddDept from"./pages/Client/Department/AddDept";
 import ViewService from "./pages/Client/Department/ViewService";
@@ -58,6 +76,14 @@ import CreateRenewalssl from "./pages/Renewal/CreateRenewalssl";
 import CreateRenewal from "./pages/Renewal/CreateRenewal";
 import EmployeeList from "./pages/HR/EmployeeList/EmployeeList";
 import EmployeeProfile from "./pages/HR/EmployeeList/EmployeeProfile";
+
+
+import ContractsView from "./pages/Contracts/ContractsView"
+
+
+
+
+
 const ProtectedRoute = ({ children, isAuthenticated }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
@@ -162,6 +188,14 @@ function App() {
         element: <AddRFPTemplate />
        },
        {
+          path:'/leads/kanbanboard',
+          element: <KanbanBoard/>
+        },
+         {
+          path:'/leads/leadform',
+          element: <LeadForm/>
+        },
+       {
         path:"/support/add",
         element: <AddSupportRequest />
        },
@@ -214,11 +248,16 @@ function App() {
         {
         path:'hr/employee/add',
         element:<AddEmployee/>
-      },
+        },
         {
           path:'/hr/department/view',
           element: <View/>,
         },
+        {
+          path:'hr/department/add',
+          element:<Add />,
+        },
+        
         {
         path:'hr/designation',
         element:<DesignationView />
@@ -227,6 +266,74 @@ function App() {
         path:'/hr/employeeprofile/:employeeId',
         element:<EmployeeProfile />
       },
+      {
+        path:'hr/editemployee/:employeeId',
+        element:<EditEmployee />
+
+      },
+      {
+        path:'/hr/holiday/calendar',
+        element:<HolidayCalendar/>
+      },
+      {
+        path:'hr/attendance/attendancemember',
+        element:<AttendanceMember />
+      },
+      {
+       path:'hr/attendance/attendancesummary',
+       element:<AttendanceSummary />
+      },
+      {
+       path:'hr/attendance/markattendance',
+       element:<AttendanceMark />
+      },
+      {
+        path:'hr/holiday/',
+        element:<Holiday />
+      },
+      {
+        path:'hr/leaves/',
+        element:<Leaves />
+      },
+     {
+        path:'hr/leaves/allleaves',
+        element:<AllLeaves />
+     },
+     {
+      path:'hr/leaves/assignleaves',
+      element:<AssignLeaves />
+
+     },
+      {
+        path:'hr/overtimework/',
+        element:<OvertimeWork />
+      },
+      {
+        path:'hr/recruitment/recruitmentview',
+        element:<RecruitmentView />
+      },
+      {
+        path:'hr/recruitment/createrecruitment',
+        element:<CreateRecruitment />
+      },
+      {
+        path:'hr/recruitment/editrecruitment',
+        element:<EditRecruitment />
+      },
+      {
+        path:'hr/overtimework/overtimecreate',
+        element:<OvertimeCreate />
+
+      },
+      {
+        path:'hr/leaves/calendar',
+        element:<Calendar />
+      },
+       {
+        path:'/hr/employeelist/employeelist',
+        element:<EmployeeList />
+      },
+      
         {
           path: '/clients/dept/view',
           element: <ViewDept/>,
@@ -244,6 +351,22 @@ function App() {
           path:'/clients/service/add',
           element: <AddService/>
         },
+        {
+        path: "/clients/edit/:id",
+        element: <AddClient/>
+       },
+        {
+        path: "/clients/dept/edit/:id",
+        element: <AddDept/>
+       },
+       {
+        path: "/clients/service/edit/:id",
+        element: <AddService/>
+       },
+        {
+        path: "/works/contracts",
+        element: <ContractsView/>
+       },
         {
           path:'/reports/renewal-report',
           element: <RenewalReport/>
@@ -293,12 +416,7 @@ function App() {
         path:'/renewal/create/renewal',
         element:<CreateRenewal />
       },
-      {
-        path:'/hr/employeelist/employeelist',
-        element:<EmployeeList />
-      },
-      
-      
+   
       ],
     },
 

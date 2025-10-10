@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../../../components/Button';
 import InputField from '../../../../components/InputField';
 
-const EmployeeForm = () => {
+const EmployeeAdd = () => {
   const [formData, setFormData] = useState({
     username: '', // Will be set to auto-generated ID
     email: '',
@@ -433,7 +433,7 @@ const EmployeeForm = () => {
                 )}
               </select>
              {showDesignationModal && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
     <div className="bg-white rounded-lg shadow-lg w-96 mx-4">
       <div className="flex justify-between items-center bg-blue-500 border-b p-4">
         <h3 className="text-lg text-white font-semibold">Add New Designation</h3>
@@ -508,7 +508,7 @@ const EmployeeForm = () => {
                 )}
               </select>
              {showDepartmentModal && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
     <div className="bg-white rounded-lg shadow-lg w-96 mx-4">
       <div className="flex justify-between items-center bg-blue-500 border-b p-4">
         <h3 className="text-lg text-white font-semibold">Add New Department</h3>
@@ -794,4 +794,4 @@ const EmployeeForm = () => {
   );
 };
 
-export default EmployeeForm;
+export default EmployeeAdd;

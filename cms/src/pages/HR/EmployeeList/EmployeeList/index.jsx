@@ -24,9 +24,9 @@ const Employees = () => {
         const employeesRes = await axios.get(endpoints.employees);
         const formattedEmployees = employeesRes.data.map(emp => ({
           id: emp.id,
-          employeeId: emp.employeeId,
-          name: emp.name,
-          email: emp.email,
+          employeeId: emp.employeeId || "", // Ensure employeeId is a string
+          name: emp.name || "", // Ensure name is a string
+          email: emp.email || "", // Ensure email is a string
           mobile: emp.mobile || "",
           address: emp.address || "",
         }));
@@ -35,6 +35,7 @@ const Employees = () => {
         setError("");
       } catch (err) {
         setError("Failed to fetch data: " + (err.response?.data?.message || err.message));
+        console.error("Error fetching employees:", err);
       } finally {
         setIsLoading(false);
       }
@@ -44,15 +45,31 @@ const Employees = () => {
 
   // Apply search filter
   useEffect(() => {
-    const filtered = employees.filter(emp =>
-      emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.employeeId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.mobile.includes(searchTerm) ||
-      emp.address.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredEmployees(filtered);
-    setCurrentPage(1);
+    try {
+      const filtered = employees.filter(emp => {
+        // Convert all fields to strings and handle null/undefined
+        const name = String(emp.name || "").toLowerCase();
+        const employeeId = String(emp.employeeId || "").toLowerCase();
+        const email = String(emp.email || "").toLowerCase();
+        const mobile = String(emp.mobile || "").toLowerCase();
+        const address = String(emp.address || "").toLowerCase();
+        const search = searchTerm.toLowerCase();
+
+        return (
+          name.includes(search) ||
+          employeeId.includes(search) ||
+          email.includes(search) ||
+          mobile.includes(search) ||
+          address.includes(search)
+        );
+      });
+      setFilteredEmployees(filtered);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error("Error in search filter:", err);
+      setError("Error filtering employees: " + err.message);
+      setFilteredEmployees(employees); // Fallback to unfiltered list
+    }
   }, [searchTerm, employees]);
 
   // Pagination logic
@@ -64,7 +81,7 @@ const Employees = () => {
   // Download Excel
   const downloadExcel = () => {
     const data = filteredEmployees.map((emp, index) => ({
-      "#": index + 1, // Sequential SL No for export
+      "#": index + 1,
       "ID": emp.employeeId,
       "Name": emp.name,
       "Email": emp.email,
@@ -90,33 +107,27 @@ const Employees = () => {
   const handleDelete = async (employeeId) => {
     if (window.confirm('Are you sure you want to delete this employee? This action cannot be undone.')) {
       try {
-        // Call backend DELETE API (adjust endpoint if needed)
         await axios.delete(`${endpoints.employees}${employeeId}/`);
         console.log('Employee deleted successfully:', employeeId);
-        // Refetch data to update list and renumber SL No
-        // Trigger refetch by updating a dependency (e.g., via a key or state)
-        const fetchData = async () => {
-          try {
-            setIsLoading(true);
-            const employeesRes = await axios.get(endpoints.employees);
-            const formattedEmployees = employeesRes.data.map(emp => ({
-              id: emp.id,
-              employeeId: emp.employeeId,
-              name: emp.name,
-              email: emp.email,
-              mobile: emp.mobile || "",
-              address: emp.address || "",
-            }));
-            setEmployees(formattedEmployees);
-            setFilteredEmployees(formattedEmployees);
-            setError("");
-          } catch (err) {
-            setError("Failed to fetch data: " + (err.response?.data?.message || err.message));
-          } finally {
-            setIsLoading(false);
-          }
-        };
-        fetchData();
+        // Update employees list
+        const updatedEmployees = employees.filter(emp => emp.id !== employeeId);
+        setEmployees(updatedEmployees);
+        setFilteredEmployees(updatedEmployees.filter(emp => {
+          const name = String(emp.name || "").toLowerCase();
+          const employeeId = String(emp.employeeId || "").toLowerCase();
+          const email = String(emp.email || "").toLowerCase();
+          const mobile = String(emp.mobile || "").toLowerCase();
+          const address = String(emp.address || "").toLowerCase();
+          const search = searchTerm.toLowerCase();
+          return (
+            name.includes(search) ||
+            employeeId.includes(search) ||
+            email.includes(search) ||
+            mobile.includes(search) ||
+            address.includes(search)
+          );
+        }));
+        setError("");
         alert('Employee deleted successfully!');
       } catch (err) {
         console.error('Error deleting employee:', err);
@@ -154,7 +165,10 @@ const Employees = () => {
             type="text"
             placeholder="Search:"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              console.log("Search term:", e.target.value); // Debug search input
+              setSearchTerm(e.target.value);
+            }}
             className="p-1 border rounded"
           />
           <button
@@ -175,7 +189,7 @@ const Employees = () => {
             <th className="p-2 text-left">Email</th>
             <th className="p-2 text-left">Mobile</th>
             <th className="p-2 text-left">Address</th>
-            <th className="p-2 text-left">Action</th> {/* New Action column */}
+            <th className="p-2 text-left">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -186,7 +200,7 @@ const Employees = () => {
           ) : currentEmployees.length > 0 ? (
             currentEmployees.map((emp, index) => (
               <tr key={emp.id} className="border-t">
-                <td className="p-2">{startIndex + index + 1}</td> {/* Sequential SL No: 1, 2, 3... */}
+                <td className="p-2">{startIndex + index + 1}</td>
                 <td className="p-2">{emp.employeeId}</td>
                 <td className="p-2">{emp.name}</td>
                 <td className="p-2">{emp.email}</td>

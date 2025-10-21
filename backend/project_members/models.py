@@ -1,3 +1,4 @@
+# Updated models.py
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -36,6 +37,7 @@ class Profile(models.Model):
     emailNotifications = models.CharField(max_length=20, choices=[('Enable', 'Enable'), ('Disable', 'Disable')], default='Enable')
     profilePicture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     reportTo = models.CharField(max_length=100, blank=True, null=True)  # Added reportTo field
+    updated_at = models.DateTimeField(auto_now=True)  # Added to track last update timestamp
 
     def save(self, *args, **kwargs):
         if not self.employeeId:

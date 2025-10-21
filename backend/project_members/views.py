@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .models import ProjectMember, Profile
-from .serializers import EmployeeSerializer, EmployeeCreateSerializer, ProjectMemberSerializer
+from .serializers import EmployeeSerializer, EmployeeCreateSerializer, EmployeeUpdateSerializer, ProjectMemberSerializer
 from works.models import Work
 from rest_framework import status
 from django.db import transaction
@@ -15,6 +15,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return EmployeeCreateSerializer
+        elif self.request.method in ['PUT', 'PATCH']:
+            return EmployeeUpdateSerializer  # Use EmployeeUpdateSerializer for updates
         return EmployeeSerializer
 
     @transaction.atomic
@@ -48,6 +50,28 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             print(f"Error during creation: {str(e)}")  # Debug errors
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)  # Allow partial updates
+        serializer.is_valid(raise_exception=True)
+        try:
+            user = serializer.save()
+            user.refresh_from_db()  # Ensure updated data is loaded
+            print(f"Updated user: {user.email}, first_name={user.first_name}")  # Debug
+            try:
+                profile = Profile.objects.get(user=user)
+                print(f"Updated profile: designation={profile.designation}, department={profile.department}, employeeId={profile.employeeId}")  # Debug
+            except Profile.DoesNotExist:
+                print(f"No Profile found for user {user.email} after update")  # Debug
+            # Serialize response
+            response_serializer = EmployeeSerializer(user)
+            print(f"Update response data: {response_serializer.data}")  # Debug
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(f"Error during update: {str(e)}")  # Debug errors
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):

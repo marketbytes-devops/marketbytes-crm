@@ -67,6 +67,7 @@ const Sidebar = ({ toggleSidebar }) => {
       subItems: [
         { to: '/projects/details', label: 'Projects' },
         { to: '/projects/add', label: 'Add Project' },
+        { to: '/works/contracts', label: 'Contracts'}
       ],
     },
 
@@ -78,6 +79,11 @@ const Sidebar = ({ toggleSidebar }) => {
           { to: '/hr/employee/view', label: 'Employee List' },
           { to: '/hr/department/view', label: 'Department' },
           { to: '/hr/designation/', label: 'Designation' },
+          { to:  'hr/attendance/attendancesummary', label: 'Attendance'},
+          { to: 'hr/holiday/',label:'Holiday'},
+          { to: 'hr/leaves/',label:'Leaves'},
+          {to:'hr/overtimework/',label:'OvertimeWork'},
+          {to:'hr/recruitment/recruitmentview',label:'Recruitment'}
         ],
       },
 

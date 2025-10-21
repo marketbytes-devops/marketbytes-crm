@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Dropdown from '../../../../components/Dropdown'; 
 import { useNavigate } from 'react-router-dom';
-import { CalendarCheck } from 'lucide-react'; 
+import { CalendarCheck, Edit, Trash2 } from 'lucide-react'; 
 import InputField from '../../../../components/InputField';
 
 const DepartmentView = () => {
@@ -10,10 +10,13 @@ const DepartmentView = () => {
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
-    status: 'Active'
+    status: 'All'
   });
   const [entriesToShow, setEntriesToShow] = useState(10);
   const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [filteredDepartments, setFilteredDepartments] = useState([]);
 
   const navigate = useNavigate();
   
@@ -21,52 +24,91 @@ const DepartmentView = () => {
     navigate(path);
   };
 
-  // Mock data
-  const mockDepartments = [
-    {
-      id: 1,
-      name: 'webdevelopment',
-      email: 'sample@gmail.com',
-      status: 'active'
-    }
-  ];
+  const fetchDepartments = async () => {
+  try {
+    setLoading(true);
+    const response = await fetch('http://localhost:8000/api/departments/');
+    const data = await response.json();
+    setDepartments(data);
+    setFilteredDepartments(data);
+  } catch (error) {
+    console.error('Error fetching departments:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setDepartments(mockDepartments);
-      setLoading(false);
-    }, 500);
+    fetchDepartments();
   }, []);
 
   const handleFilterApply = () => {
-    console.log('Applying filters:', filters);
-  };
+  const filtered = departments.filter(dept => {
+    const statusMatch = filters.status === 'All' ? true : dept.status.toLowerCase() === filters.status.toLowerCase();
+    const startDateMatch = filters.startDate ? new Date(dept.created_at) >= new Date(filters.startDate) : true;
+    const endDateMatch = filters.endDate ? new Date(dept.created_at) <= new Date(filters.endDate) : true;
+    return statusMatch && startDateMatch && endDateMatch;
+  });
+  setFilteredDepartments(filtered);
+  setCurrentPage(1);
+};
 
   const handleFilterReset = () => {
-    setFilters({
-      startDate: '',
-      endDate: '',
-      status: 'Active'
-    });
-    setDateRange({ startDate: '', endDate: '' });
+    setFilteredDepartments(departments);
   };
 
   const handleStatusChange = (status) => {
     setFilters(prev => ({ ...prev, status }));
+    setCurrentPage(1); // Reset to first page
   };
 
   const handleDateRangeChange = (field, value) => {
     setDateRange(prev => ({ ...prev, [field]: value }));
     setFilters(prev => ({ ...prev, startDate: field === 'startDate' ? value : prev.startDate, endDate: field === 'endDate' ? value : prev.endDate }));
+    setCurrentPage(1); // Reset to first page
   };
 
   const applyDateRange = () => {
-    console.log('Applying date range:', dateRange);
+  handleFilterApply();
+};
+
+  const handleEditDepartment = (departmentId) => {
+    navigate(`/clients/dept/edit/${departmentId}`);
   };
 
+  const handleDeleteDepartment = async (departmentId, departmentName) => {
+  if (window.confirm(`Are you sure you want to delete ${departmentName}?`)) {
+    try {
+      const response = await fetch(`http://localhost:8000/api/departments/${departmentId}/`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        fetchDepartments();
+        alert('Department deleted successfully!');
+        setCurrentPage(1);
+      } else {
+        alert('Failed to delete department.');
+      }
+    } catch (error) {
+      console.error('Error deleting department:', error);
+      alert('Error deleting department. Please try again.');
+    }
+  }
+};
+  // Pagination logic
+  const totalPages = Math.ceil(filteredDepartments.length / entriesToShow);
+  const paginatedDepartments = filteredDepartments.slice(
+    (currentPage - 1) * entriesToShow,
+    currentPage * entriesToShow
+);
 
-  
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    } else if (direction === 'prev' && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -84,7 +126,7 @@ const DepartmentView = () => {
               </button>
               <button 
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm whitespace-nowrap"
-                onClick={() =>handleButtonClick('/clients/service/view')}
+                onClick={() => handleButtonClick('/clients/service/view')}
               >
                 Service
               </button>
@@ -137,6 +179,12 @@ const DepartmentView = () => {
                   >
                     <div className="space-y-2">
                       <button
+  onClick={() => handleStatusChange('All')}
+  className="w-full text-left text-sm hover:bg-gray-100 px-2 py-1 rounded"
+>
+  All
+</button>
+                      <button
                         onClick={() => handleStatusChange('Active')}
                         className="w-full text-left text-sm hover:bg-gray-100 px-2 py-1 rounded"
                       >
@@ -182,9 +230,13 @@ const DepartmentView = () => {
                     <span className="text-sm text-gray-600">Show</span>
                     <select
                       value={entriesToShow}
-                      onChange={(e) => setEntriesToShow(Number(e.target.value))}
+                      onChange={(e) => {
+                        setEntriesToShow(Number(e.target.value));
+                        setCurrentPage(1); // Reset to first page when entries change
+                      }}
                       className="px-3 py-1 border border-gray-300 rounded text-sm"
                     >
+                      <option value={5}>5</option>
                       <option value={10}>10</option>
                       <option value={25}>25</option>
                       <option value={50}>50</option>
@@ -200,6 +252,9 @@ const DepartmentView = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        #
+                      </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         DEPARTMENT
                       </th>
@@ -217,19 +272,22 @@ const DepartmentView = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {loading ? (
                       <tr>
-                        <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                        <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
                           Loading...
                         </td>
                       </tr>
-                    ) : departments.length === 0 ? (
+                    ) : paginatedDepartments.length === 0 ? (
                       <tr>
-                        <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                        <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
                           No departments found
                         </td>
                       </tr>
                     ) : (
-                      departments.map((dept) => (
+                      paginatedDepartments.map((dept, index) => (
                         <tr key={dept.id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(currentPage - 1) * entriesToShow + index + 1}
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {dept.name}
                           </td>
@@ -246,9 +304,22 @@ const DepartmentView = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <button  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-sm">
-                              View Details
-                            </button>
+                            <div className="flex space-x-2">
+                              <button 
+                                className="text-blue-600 hover:text-blue-800"
+                                onClick={() => handleEditDepartment(dept.id)}
+                                title="Edit Department"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button 
+                                className="text-red-600 hover:text-red-800"
+                                onClick={() => handleDeleteDepartment(dept.id, dept.name)}
+                                title="Delete Department"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -260,13 +331,21 @@ const DepartmentView = () => {
               {/* Table Footer */}
               <div className="flex flex-col sm:flex-row justify-between items-center p-4 border-t gap-4">
                 <div className="text-sm text-gray-700">
-                  Showing 1 to {departments.length} of {departments.length} entries
+                  Showing {(currentPage - 1) * entriesToShow + 1} to {Math.min(currentPage * entriesToShow, departments.length)} of {departments.length} entries
                 </div>
                 <div className="flex space-x-2">
-                  <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button
+                    onClick={() => handlePageChange('prev')}
+                    disabled={currentPage === 1}
+                    className={`px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
                     Previous
                   </button>
-                  <button className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button
+                    onClick={() => handlePageChange('next')}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                    className={`px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 ${currentPage === totalPages || totalPages === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
                     Next
                   </button>
                 </div>

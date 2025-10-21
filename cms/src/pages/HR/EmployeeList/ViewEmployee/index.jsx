@@ -26,9 +26,9 @@ const Employees = () => {
     search: "",
     role: "All",
   });
-  const [showActionButton, setShowActionButton] = useState(null); // State for showing Action button
-  const [showActionMenu, setShowActionMenu] = useState(null); // State for showing action menu
-  const actionMenuRef = useRef(null); // Ref to track the action menu
+  const [showActionButton, setShowActionButton] = useState(null);
+  const [showActionMenu, setShowActionMenu] = useState(null);
+  const actionMenuRef = useRef(null);
 
   const apiBaseUrl = "http://localhost:8000/api/";
   const endpoints = {
@@ -117,13 +117,13 @@ const Employees = () => {
       });
     }
     if (filters.designation_name !== "All") {
-      filtered = filtered.filter(emp => emp.designation_name === Number(filters.designation_name));
+      filtered = filtered.filter(emp => emp.designation_id === Number(filters.designation_name));
     }
     if (filters.role !== "All") {
       filtered = filtered.filter(emp => emp.role?.toLowerCase() === filters.role.toLowerCase());
     }
     if (filters.department !== "All") {
-      filtered = filtered.filter(emp => emp.department === Number(filters.department));
+      filtered = filtered.filter(emp => emp.department_id === Number(filters.department));
     }
     if (filters.search) {
       filtered = filtered.filter(emp =>
@@ -166,8 +166,8 @@ const Employees = () => {
       Email: emp.email || "N/A",
       Role: emp.role || "N/A",
       Status: emp.logIn || "N/A",
-      Designation_name: designations.find(d => d.id === emp.designation_name)?.designation_name || "N/A",
-      Department: departments.find(d => d.id === emp.department)?.name || "N/A",
+      Designation: emp.designation || "N/A",
+      Department: emp.department || "N/A",
       Skills: (emp.skills || '')
         .split(',')
         .map(skillId => skills.find(s => s.id === skillId.trim())?.name || "N/A")
@@ -396,6 +396,11 @@ const Employees = () => {
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
                             onClick={() => {
                               setShowActionMenu(null);
+                              if (!emp.id) {
+                                console.error("Employee ID is missing for navigation");
+                                setError("Cannot navigate: Employee ID is missing");
+                                return;
+                              }
                               console.log("View clicked for employee:", emp.id);
                               navigate(`/hr/employeeprofile/${emp.id}`);
                             }}
@@ -410,8 +415,13 @@ const Employees = () => {
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
                             onClick={() => {
                               setShowActionMenu(null);
+                              if (!emp.id) {
+                                console.error("Employee ID is missing for navigation");
+                                setError("Cannot navigate: Employee ID is missing");
+                                return;
+                              }
                               console.log("Edit clicked for employee:", emp.id);
-                              // Handle Edit action
+                              navigate(`/hr/editemployee/${emp.id}`);
                             }}
                           >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -484,4 +494,6 @@ const Employees = () => {
   );
 };
 
+
 export default Employees;
+

@@ -2,24 +2,23 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../../../components/Button';
 import axios from 'axios';
 
-const DesignationList = () => {
+const DesignationView = () => {
   const [designations, setDesignations] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [newDesignationName, setNewDesignationName] = useState(''); // State for new designation name
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch designations (now includes computed members/employees)
       const designationResponse = await axios.get('http://127.0.0.1:8000/api/designation/');
-      // Fetch employees (all profiles with user info for avatar lookup)
       const employeeResponse = await axios.get('http://127.0.0.1:8000/api/project-members/employees/');
 
       console.log('Designations:', designationResponse.data);
       console.log('Employees:', employeeResponse.data);
 
-      // Deduplicate designations by id
       const uniqueDesignations = Array.from(
         new Map(designationResponse.data.map(item => [item.id, item])).values()
       );
@@ -37,18 +36,15 @@ const DesignationList = () => {
   useEffect(() => {
     fetchData();
 
-    // Optional polling: Refresh data every 30 seconds
     const interval = setInterval(() => {
       fetchData();
     }, 30000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
   const handleAddDesignation = () => {
-    console.log('Add new designation');
-    // Implement add designation logic here
+    setIsModalOpen(true); // Open the modal
   };
 
   const handleActionClick = (designation) => {
@@ -56,12 +52,10 @@ const DesignationList = () => {
     // Implement edit/view actions here
   };
 
-  // Get member count
   const getMemberCount = (designation) => {
     return designation.employees?.length || designation.members || 0;
   };
 
-  // Render employee avatars with hover effect
   const renderEmployees = (employeeIds) => {
     if (!employeeIds || !Array.isArray(employeeIds) || employeeIds.length === 0) {
       return <span className="text-gray-500 text-sm">No employees</span>;
@@ -97,12 +91,37 @@ const DesignationList = () => {
     );
   };
 
-  // Render member count badge
   const renderMemberBadge = (count) => (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
       {count} Member{count !== 1 ? 's' : ''}
     </span>
   );
+
+  const handleSaveDesignation = async () => {
+    if (!newDesignationName.trim()) {
+      alert('Please enter a designation name.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/designation/', {
+        designation_name: newDesignationName.trim(),
+      });
+      setDesignations(prev => [...prev, response.data]);
+      setNewDesignationName('');
+      setIsModalOpen(false);
+      alert('Designation added successfully!');
+    } catch (error) {
+      console.error('Error adding designation:', error);
+      setError('Failed to add designation');
+      alert('Failed to add designation. Please try again.');
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewDesignationName('');
+  };
 
   if (loading) {
     return <div className="p-6 text-center text-gray-500">Loading...</div>;
@@ -198,8 +217,53 @@ const DesignationList = () => {
           </table>
         </div>
       )}
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-96 mx-4">
+            <div className="flex justify-between items-center bg-blue-500 text-white p-4 rounded-t-lg">
+              <h3 className="text-lg font-semibold">Designation</h3>
+              <button
+                className="text-white hover:text-gray-200 text-xl font-bold"
+                onClick={handleCloseModal}
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={newDesignationName}
+                  onChange={(e) => setNewDesignationName(e.target.value)}
+                  placeholder="Name"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex justify-end space-x-2 border-t p-4">
+              <Button
+                className="border border-gray-300 text-gray-700 rounded px-4 py-2 text-sm hover:bg-gray-50"
+                onClick={handleCloseModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-green-500 text-white rounded px-4 py-2 text-sm hover:bg-green-600"
+                onClick={handleSaveDesignation}
+              >
+                ✓ Save
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default DesignationList;
+export default DesignationView;

@@ -1,25 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Button from '../../../../components/Button';
 import Icons from '../../../../components/Icons';
 
 const EmployeeProfile = () => {
   const { employeeId } = useParams();
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const [employee, setEmployee] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('Profile'); // State to track the active tab
-  const apiBaseUrl = 'http://localhost:8000/api/';
-  const endpoint = `${apiBaseUrl}project-members/employees`;
+  const [activeTab, setActiveTab] = useState('Profile');
+  const apiBaseUrl = 'http://127.0.0.1:8000';
+  const endpoint = `${apiBaseUrl}/api/project-members/employees`;
 
   useEffect(() => {
     const fetchEmployee = async () => {
       setIsLoading(true);
       try {
-        const cacheBuster = `?_=${new Date().getTime()}`;
-        const response = await axios.get(`${endpoint}/${employeeId}${cacheBuster}`);
-        setEmployee(response.data);
+        if (state?.updatedEmployee && state.updatedEmployee.id === parseInt(employeeId)) {
+          console.log('Using updatedEmployee from state:', state.updatedEmployee);
+          setEmployee({
+            ...state.updatedEmployee,
+            designation: state.updatedEmployee.designation || 'N/A',
+            department: state.updatedEmployee.department || 'N/A',
+            profilePicture: state.updatedEmployee.profilePicture
+              ? state.updatedEmployee.profilePicture.startsWith('http')
+                ? state.updatedEmployee.profilePicture
+                : `${apiBaseUrl}${state.updatedEmployee.profilePicture}`
+              : null,
+          });
+          setError('');
+          setIsLoading(false);
+          return;
+        }
+        const response = await axios.get(`${endpoint}/${employeeId}`);
+        setEmployee({
+          ...response.data,
+          designation: response.data.designation || 'N/A',
+          department: response.data.department || 'N/A',
+          profilePicture: response.data.profilePicture
+            ? response.data.profilePicture.startsWith('http')
+              ? response.data.profilePicture
+              : `${apiBaseUrl}${response.data.profilePicture}`
+            : null,
+        });
         setError('');
       } catch (err) {
         setError('Failed to fetch employee data: ' + (err.response?.data?.message || err.message));
@@ -28,11 +54,9 @@ const EmployeeProfile = () => {
         setIsLoading(false);
       }
     };
-
     fetchEmployee();
-  }, [employeeId]);
+  }, [employeeId, state?.updatedEmployee]);
 
-  // Handle tab click
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -50,14 +74,19 @@ const EmployeeProfile = () => {
       <div className="flex justify-between items-start mb-6">
         <h2 className="text-xl font-semibold text-gray-700">Employees</h2>
         <div className="w-20 h-5">
-          <Button className="bg-green-500 text-white hover:bg-green-600">Edit</Button>
+          <Button
+            className="bg-green-500 text-white hover:bg-green-600"
+            onClick={() => navigate(`/hr/editemployee/${employeeId}`)}
+          >
+            Edit
+          </Button>
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-1/3">
           <div className="relative">
             <img
-              src={employee.profile_picture || 'https://via.placeholder.com/150'}
+              src={employee.profilePicture ? `${employee.profilePicture}?t=${new Date().getTime()}` : 'https://via.placeholder.com/150'}
               alt="Employee"
               className="w-full h-64 object-cover rounded-lg"
             />
@@ -69,7 +98,8 @@ const EmployeeProfile = () => {
           </div>
         </div>
         <div className="w-full md:w-2/3 grid grid-cols-2 gap-4">
-          <div className="flex items-center">
+          {/* Uncomment these if tasks_done, hours_logged, leaves_taken, and remaining_leaves are added to EmployeeSerializer */}
+          {/* <div className="flex items-center">
             <Icons>
               <span className="text-green-500">✔</span>
             </Icons>
@@ -104,7 +134,7 @@ const EmployeeProfile = () => {
               <p className="text-gray-600">Remaining Leaves</p>
               <p className="text-lg font-medium">{employee.remaining_leaves || 0}</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="mt-6">
@@ -131,7 +161,6 @@ const EmployeeProfile = () => {
             </button>
           ))}
         </div>
-        {/* Conditionally render profile details when activeTab is 'Profile' */}
         {activeTab === 'Profile' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -140,7 +169,7 @@ const EmployeeProfile = () => {
             </div>
             <div>
               <p className="font-medium">Employee ID</p>
-              <p className="text-sm font-small">{employee.employee_id || 'N/A'}</p>
+              <p className="text-sm font-small">{employee.employeeId || 'N/A'}</p>
             </div>
             <div>
               <p className="font-medium">Email</p>
@@ -148,15 +177,15 @@ const EmployeeProfile = () => {
             </div>
             <div>
               <p className="font-medium">Designation</p>
-              <p className="text-sm font-small">{employee.designation_name || 'N/A'}</p>
+              <p className="text-sm font-small">{employee.designation || 'N/A'}</p>
             </div>
             <div>
               <p className="font-medium">Department</p>
-              <p className="text-sm font-small">{employee.department_name || 'N/A'}</p>
+              <p className="text-sm font-small">{employee.department || 'N/A'}</p>
             </div>
             <div>
               <p className="font-medium">Joining Date</p>
-              <p className="text-sm font-small">{employee.joining_date || 'N/A'}</p>
+              <p className="text-sm font-small">{employee.joiningDate || 'N/A'}</p>
             </div>
             <div>
               <p className="font-medium">Mobile</p>
@@ -168,11 +197,11 @@ const EmployeeProfile = () => {
             </div>
             <div>
               <p className="font-medium">Slack Username</p>
-              <p className="text-sm font-small">{employee.slack_username || '@'}</p>
+              <p className="text-sm font-small">{employee.slackUsername || '@'}</p>
             </div>
             <div>
               <p className="font-medium">Hourly Rate</p>
-              <p className="text-sm font-small">{employee.hourly_rate || 'N/A'}</p>
+              <p className="text-sm font-small">{employee.hourlyRate || 'N/A'}</p>
             </div>
             <div>
               <p className="font-medium">Skills</p>
@@ -180,7 +209,7 @@ const EmployeeProfile = () => {
             </div>
             <div>
               <p className="font-medium">Report To</p>
-              <p className="text-sm font-small">{employee.report_to || 'N/A'}</p>
+              <p className="text-sm font-small">{employee.reportTo || 'N/A'}</p>
             </div>
             <div className="col-span-3">
               <p className="font-medium">Address</p>
@@ -188,7 +217,6 @@ const EmployeeProfile = () => {
             </div>
           </div>
         )}
-        {/* Placeholder for other tabs */}
         {activeTab !== 'Profile' && (
           <div className="text-center text-gray-600">
             Content for {activeTab} is not yet implemented.

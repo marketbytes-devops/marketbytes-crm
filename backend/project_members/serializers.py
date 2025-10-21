@@ -12,8 +12,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
     employeeId = serializers.CharField(source='profile.employeeId', read_only=True, allow_null=True)
     employeeName = serializers.SerializerMethodField()
     employeeEmail = serializers.CharField(source='email', read_only=True)
-    department = serializers.SerializerMethodField()  # Changed to SerializerMethodField
-    designation = serializers.SerializerMethodField()  # Changed to SerializerMethodField
+    department = serializers.SerializerMethodField()
+    designation = serializers.SerializerMethodField()
     dateOfBirth = serializers.DateField(source='profile.dateOfBirth', read_only=True, allow_null=True)
     joiningDate = serializers.DateField(source='profile.joiningDate', read_only=True, allow_null=True)
     probationPeriod = serializers.DateField(source='profile.probationPeriod', read_only=True, allow_null=True)
@@ -32,29 +32,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id',
-            'username',
-            'email',
-            'name',
-            'employeeId',
-            'employeeName',
-            'employeeEmail',
-            'department',
-            'designation',
-            'dateOfBirth',
-            'joiningDate',
-            'probationPeriod',
-            'slackUsername',
-            'exitDate',
-            'gender',
-            'address',
-            'skills',
-            'mobile',
-            'hourlyRate',
-            'logIn',
-            'emailNotifications',
-            'reportTo',
-            'profilePicture',
+            'id', 'username', 'email', 'name', 'employeeId', 'employeeName', 'employeeEmail',
+            'department', 'designation', 'dateOfBirth', 'joiningDate', 'probationPeriod',
+            'slackUsername', 'exitDate', 'gender', 'address', 'skills', 'mobile', 'hourlyRate',
+            'logIn', 'emailNotifications', 'reportTo', 'profilePicture',
         ]
 
     def get_name(self, obj):
@@ -67,20 +48,20 @@ class EmployeeSerializer(serializers.ModelSerializer):
         try:
             profile = obj.profile
             department_name = profile.department.name if profile.department else None
-            print(f"get_department: User {obj.email}, department: {department_name}")  # Debug
+            print(f"get_department: User {obj.email}, department: {department_name}")
             return department_name
         except Profile.DoesNotExist:
-            print(f"get_department: No Profile for user {obj.email}")  # Debug
+            print(f"get_department: No Profile for user {obj.email}")
             return None
 
     def get_designation(self, obj):
         try:
             profile = obj.profile
             designation_name = profile.designation.designation_name if profile.designation else None
-            print(f"get_designation: User {obj.email}, designation: {designation_name}")  # Debug
+            print(f"get_designation: User {obj.email}, designation: {designation_name}")
             return designation_name
         except Profile.DoesNotExist:
-            print(f"get_designation: No Profile for user {obj.email}")  # Debug
+            print(f"get_designation: No Profile for user {obj.email}")
             return None
 
     def get_profilePicture(self, obj):
@@ -120,25 +101,9 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'employeeId',
-            'employeeName',
-            'employeeEmail',
-            'password',
-            'department',
-            'designation',
-            'dateOfBirth',
-            'joiningDate',
-            'probationPeriod',
-            'slackUsername',
-            'exitDate',
-            'gender',
-            'address',
-            'skills',
-            'mobile',
-            'hourlyRate',
-            'logIn',
-            'emailNotifications',
-            'profilePicture',
+            'employeeId', 'employeeName', 'employeeEmail', 'password', 'department', 'designation',
+            'dateOfBirth', 'joiningDate', 'probationPeriod', 'slackUsername', 'exitDate', 'gender',
+            'address', 'skills', 'mobile', 'hourlyRate', 'logIn', 'emailNotifications', 'profilePicture',
             'reportTo',
         ]
 
@@ -183,7 +148,7 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
             password=password
         )
         profile = Profile.objects.create(user=user, **profile_data)
-        print(f"Created Profile for user {user.email}: designation={profile.designation}, department={profile.department}, employeeId={profile.employeeId}")  # Debug
+        print(f"Created Profile for user {user.email}: designation={profile.designation}, department={profile.department}, employeeId={profile.employeeId}")
         from works.models import Work
         from .models import ProjectMember
         default_project, created = Work.objects.get_or_create(
@@ -195,7 +160,7 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
             project=default_project,
             defaults={"allocated_hours": 0}
         )
-        print(f"Created ProjectMember for {user.email} with ID {project_member.id}")  # Debug
+        print(f"Created ProjectMember for {user.email} with ID {project_member.id}")
         return user
 
 class ProjectMemberSerializer(serializers.ModelSerializer):
@@ -206,3 +171,56 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectMember
         fields = ["id", "project", "project_name", "member", "member_name", "allocated_hours", "member_email"]
+
+class EmployeeUpdateSerializer(serializers.ModelSerializer):
+    department = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(), required=False, allow_null=True
+    )
+    designation = serializers.PrimaryKeyRelatedField(
+        queryset=Designation.objects.all(), required=False, allow_null=True
+    )
+    dateOfBirth = serializers.DateField(required=False, allow_null=True)
+    joiningDate = serializers.DateField(required=False, allow_null=True)
+    probationPeriod = serializers.DateField(required=False, allow_null=True)
+    slackUsername = serializers.CharField(required=False, allow_null=True)
+    exitDate = serializers.DateField(required=False, allow_null=True)
+    gender = serializers.CharField(required=False, allow_null=True)
+    address = serializers.CharField(required=False, allow_null=True)
+    skills = serializers.CharField(required=False, allow_null=True)
+    mobile = serializers.CharField(required=False, allow_null=True)
+    hourlyRate = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, allow_null=True)
+    logIn = serializers.CharField(required=False, allow_null=True)
+    emailNotifications = serializers.CharField(required=False, allow_null=True)
+    reportTo = serializers.CharField(required=False, allow_null=True)
+    profilePicture = serializers.ImageField(required=False, allow_null=True)
+
+    class Meta:
+        model = User
+        fields = [
+            "id", "username", "email", "first_name", "department", "designation",
+            "dateOfBirth", "joiningDate", "probationPeriod", "slackUsername", "exitDate",
+            "gender", "address", "skills", "mobile", "hourlyRate", "logIn",
+            "emailNotifications", "reportTo", "profilePicture",
+        ]
+
+    def update(self, instance, validated_data):
+        # Update User fields
+        instance.username = validated_data.get("username", instance.username)
+        instance.email = validated_data.get("email", instance.email)
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.save()
+
+        # Update Profile fields
+        profile = instance.profile
+        profile_data = {
+            key: validated_data.pop(key)
+            for key in list(validated_data.keys())
+            if hasattr(profile, key)
+        }
+        if 'profilePicture' in validated_data:
+            profile.profilePicture = validated_data.pop('profilePicture')
+        for attr, value in profile_data.items():
+            setattr(profile, attr, value)
+        profile.save()
+
+        return instance

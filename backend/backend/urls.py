@@ -5,25 +5,16 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
-    # Existing apps
     path("api/", include("authapp.urls")),
-    path("documentation/", include("documentation.urls")),
-
-    # Works (your projects)
-    path("api/works/", include("works.urls")),
-
-    # Newly created apps
-    path("api/clients/", include("clients.urls")),
-
     path("api/categories/", include("categories.urls")),
+    path("api/clients/", include("clients.urls")),
     path("api/departments/", include("departments.urls")),
+    path("api/designation/", include("designation.urls")),
     path("api/project-members/", include("project_members.urls")),
-    
-     path('api/tickets/', include('ticket_app.urls')),
-     path('api/designation/', include('designation.urls')),
-     path("api/services/", include("services.urls"))
-
+    path("api/services/", include("services.urls")),
+    path("api/tickets/", include("ticket_app.urls")),
+    path("api/works/", include("works.urls")),
+    path("documentation/", include("documentation.urls")),
 ]
 
 if settings.DEBUG:

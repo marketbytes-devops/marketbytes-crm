@@ -1,4 +1,3 @@
-# project_members/models_extended.py
 from django.db import models
 from .models import Employee
 

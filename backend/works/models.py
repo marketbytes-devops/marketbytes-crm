@@ -1,6 +1,5 @@
 from django.db import models
-from django.conf import settings  
-
+from django.conf import settings
 from clients.models import Client
 from categories.models import ProjectCategory
 from departments.models import Department
@@ -8,58 +7,53 @@ from departments.models import Department
 
 class Work(models.Model):
     RENEWAL_FREQUENCY_CHOICES = [
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
-        ('halfyearly', 'Half-Yearly'),
-        ('yearly', 'Yearly'),
+        ("monthly", "Monthly"),
+        ("quarterly", "Quarterly"),
+        ("halfyearly", "Half-Yearly"),
+        ("yearly", "Yearly"),
     ]
 
     STATUS_CHOICES = [
-        ('ongoing', 'Ongoing'),
-        ('completed', 'Completed'),
-        ('due', 'Due'),
-        ('overdue', 'Overdue'),
+        ("ongoing", "Ongoing"),
+        ("completed", "Completed"),
+        ("due", "Due"),
+        ("overdue", "Overdue"),
     ]
 
     CURRENCY_CHOICES = [
-        ('USD', 'US Dollar'),
-        ('EUR', 'Euro'),
-        ('INR', 'Indian Rupee'),
+        ("USD", "US Dollar"),
+        ("EUR", "Euro"),
+        ("INR", "Indian Rupee"),
     ]
 
-    workName = models.CharField(max_length=255)
-
-    # Foreign keys
+    workName = models.CharField(max_length=255, null=True, blank=True)
     category = models.ForeignKey(
         ProjectCategory, on_delete=models.SET_NULL, null=True, blank=True
     )
     department = models.ForeignKey(
         Department, on_delete=models.SET_NULL, null=True, blank=True
     )
-
-    # Choices instead of foreign key
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default='ongoing'
+        max_length=20, choices=STATUS_CHOICES, default="ongoing", null=True, blank=True
     )
     currency = models.CharField(
-        max_length=10, choices=CURRENCY_CHOICES, default='USD'
+        max_length=10, choices=CURRENCY_CHOICES, default="USD", null=True, blank=True
     )
-
     startDate = models.DateField(null=True, blank=True)
     deadline = models.DateField(null=True, blank=True)
-    noDeadline = models.BooleanField(default=False)
+    noDeadline = models.BooleanField(default=False, null=True, blank=True)
 
-    amc = models.BooleanField(default=False)
+    amc = models.BooleanField(default=False, null=True, blank=True)
     amc_start_date = models.DateField(null=True, blank=True)
     amc_end_date = models.DateField(null=True, blank=True)
 
-    renewable = models.BooleanField(default=False)
+    renewable = models.BooleanField(default=False, null=True, blank=True)
     renewalFrequency = models.CharField(
         max_length=20, choices=RENEWAL_FREQUENCY_CHOICES, null=True, blank=True
     )
 
     workMembers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name="works"
+        settings.AUTH_USER_MODEL, null=True, blank=True, related_name="works"
     )
 
     summary = models.TextField(null=True, blank=True)
